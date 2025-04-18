@@ -6,13 +6,15 @@ import datetime
 import pandas as pd
 import numpy as np
 import json
-import datetime
-#import pyjson5
+import glmanip
 
 
 
 def clean_timestamp(dataframe):
     dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' PDT')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
+    
+def clean_timestamp_EST(dataframe):
+    dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' EST')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
 
 
 def output_from_gridlabd():
@@ -43,6 +45,31 @@ def output_from_gridlabd():
     plot_house = np.array(house_load) * 1000
     
     return plot_time, plot_charge, plot_house
+
+def output_from_gridlabd_v2():
+    filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
+    raw_data_charger = pd.read_csv(filename,skiprows=8)
+    clean_timestamp_EST(raw_data_charger)
+    
+    time = raw_data_charger['# timestamp']
+    # Convert timestamps into seconds since start of simulation
+    plot_time = (np.array(time)).astype(float) / 10**9   #default is nanoseconds
+    plot_time = plot_time - plot_time[0]
+    plot_time = plot_time.astype(int)
+    
+    data_charger = np.array(raw_data_charger)
+    data_charger = data_charger[:,1:]
+    
+    plot_charge = np.zeros(len(plot_time))
+    for i in range(data_charger.shape[0]):
+        temp_sum = 0
+        for j in range(data_charger.shape[1]):
+            temp_sum += data_charger[i,j]
+        plot_charge[i] = temp_sum
+    
+    return plot_time, plot_charge
+    
+    
 
 class Charger:
     # Class variables (shared by all in class)
@@ -259,6 +286,12 @@ def agregate_loads(Chargers,sim_end,interval):
                     plot_load[j] += C.load_log[i][1]
                     break
     return plot_time, plot_load
+
+def numerical_integration(X,Y):
+    result=float(0.0)
+    for i in range(len(X)-1):
+        result += ((Y[i]+Y[i+1])/2)*((X[i+1]-X[i]))
+    return result
         
 ##############################################################################
 #################################### Main ####################################
@@ -269,7 +302,7 @@ load = [0.0]
 interval = 300
 prev_sim_time = 0
 sim_time = 0
-sim_end = 86400*4
+sim_end = 86400*7
 
 A = Vehicle()
 A.index = 1
@@ -288,34 +321,56 @@ B.update_capacity()
 #C = Charger()
 Chargers = []
 
+plot_time_d, plot_charge_d = output_from_gridlabd_v2()
+
+basedir = ""
+dir_for_glm ='test.glm'
+glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
+[model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
+
 ################## Read in Vehicles #######################
 file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
 EV_dict_raw = json.load(file)
 EV_dict = EV_dict_raw['ev']
+
+EV_dict = model['evcharger_det']
+
 EV_index = 0
 for i in EV_dict:
     C = Charger()
-    C.name = EV_dict[i]['name']
-    C.maximum_load = EV_dict[i]['max_charge'] / EV_dict[i]['efficiency']
+    # C.name = EV_dict[i]['name']
+    C.name = i
+    # C.maximum_load = EV_dict[i]['max_charge'] / EV_dict[i]['efficiency']
+    C.maximum_load = float(EV_dict[i]['maximum_charge_rate']) / float(EV_dict[i]['charging_efficiency'])
     V = Vehicle()
     
-    V.battery_SOC = EV_dict[i]['battery_SOC']
-    V.battery_size = EV_dict[i]['range_miles'] / EV_dict[i]['miles_per_kwh']
+    V.battery_SOC = float(EV_dict[i]['battery_SOC'])
+    # V.battery_size = float(EV_dict[i]['range_miles']) / float(EV_dict[i]['miles_per_kwh'])
+    V.battery_size = float(EV_dict[i]['mileage_classification']) / float(EV_dict[i]['mileage_efficiency'])
     V.update_capacity()
-    V.charging_efficiency = EV_dict[i]['efficiency']
-    V.mileage_efficiency = EV_dict[i]['miles_per_kwh']
-    V.maximum_charge_rate = EV_dict[i]['max_charge']
+    # V.charging_efficiency = float(EV_dict[i]['efficiency'])
+    V.charging_efficiency = float(EV_dict[i]['charging_efficiency'])
+    # V.mileage_efficiency = float(EV_dict[i]['miles_per_kwh'])
+    V.mileage_efficiency = float(EV_dict[i]['mileage_efficiency'])
+    # V.maximum_charge_rate = float(EV_dict[i]['max_charge'])
+    V.maximum_charge_rate = float(EV_dict[i]['maximum_charge_rate'])
     
     V.index = EV_index
     EV_index += 1
     
-    V.work_start = EV_dict[i]['arrival_work'] // 100            # hours
-    V.work_start += (( EV_dict[i]['arrival_work'] % 100 ) / 60) # minutes
-    V.work_duration = EV_dict[i]['work_duration'] / 3600
-    home_arrival = EV_dict[i]['arrival_home'] // 100
-    home_arrival += (( EV_dict[i]['arrival_home'] % 100 ) / 60)
+    # V.work_start = EV_dict[i]['arrival_work'] // 100            # hours
+    V.work_start = int(EV_dict[i]['arrival_at_work']) // 100
+    # V.work_start += (( EV_dict[i]['arrival_work'] % 100 ) / 60) # minutes
+    V.work_start += (( int(EV_dict[i]['arrival_at_work']) % 100 ) / 60)
+    # V.work_duration = EV_dict[i]['work_duration'] / 3600
+    V.work_duration = float(EV_dict[i]['duration_at_work']) / 3600
+    # home_arrival = EV_dict[i]['arrival_home'] // 100
+    home_arrival = int(EV_dict[i]['arrival_at_home']) // 100
+    # home_arrival += (( EV_dict[i]['arrival_home'] % 100 ) / 60)
+    home_arrival += (( int(EV_dict[i]['arrival_at_home']) % 100 ) / 60)
     V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
-    V.commute_distance = EV_dict[i]['daily_miles'] / 2
+    # V.commute_distance = EV_dict[i]['daily_miles'] / 2
+    V.commute_distance = float(EV_dict[i]['travel_distance']) / 2
     
     V.set_day_schedule(sim_end)
     V.next_state_change = V.schedule[1][0]
@@ -414,9 +469,10 @@ for C in Chargers:
     
 plot_time, plot_load = agregate_loads(Chargers, sim_end, interval)
 plot_time = np.array(plot_time)
-plot_time = plot_time / 3600
+# plot_time = plot_time / 3600
 plot_load = np.array(plot_load)
-plot_load = plot_load / 1000
+plot_load = plot_load * 0.9
+# plot_load = plot_load / 1000
 
 # plot_time = []
 # plot_load = []
@@ -428,12 +484,27 @@ plot_load = plot_load / 1000
     
 # plot_time_d, plot_charge_d, plot_house_d = output_from_gridlabd()
 
+
 # #plot_diff = plot_charge_d - plot_load
     
 plt.plot(plot_time,plot_load)
-# plt.plot(plot_time_d,plot_charge_d)
-# labels = ['Python load','Gridlab-D Load']
-# plt.legend(labels)
+plt.plot(plot_time_d,plot_charge_d)
+labels = ['Python load','Gridlab-D Load']
+plt.legend(labels)
 plt.show()
 
-#pllt.plot(plot_time,plot_diff)
+
+energy_input = numerical_integration(plot_time, plot_load)
+energy_input = (energy_input / 3600) / 1000                         # W*s -> kW * h
+avg_distance_per_car = (energy_input * 3.846) / 100               # 3.846 mi/kWhr, 100 vehicles
+avg_distance_per_car_per_day = avg_distance_per_car / 7             # simulation for a week
+
+energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
+energy_input_d = (energy_input_d / 3600) / 1000
+avg_distance_per_car_d = (energy_input_d * 3.846) / 100
+avg_distance_per_car_per_day_d = avg_distance_per_car_d / 7
+
+avg_dist_actual = 0.0
+for C in Chargers:
+    avg_dist_actual += 2*C.current_vehicle.commute_distance
+avg_dist_actual = avg_dist_actual / 100
