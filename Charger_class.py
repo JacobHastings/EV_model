@@ -46,6 +46,9 @@ class Charger:
             self.load_log.append((self.current_time,self.load))
         
     def charge(self,time):      # time is in seconds
+        # Test initial log
+        self.update_load()
+        self.current_vehicle.update_log()
         # Check for vehicle presence
         if not self.occupied:
             print("No vehicle to charge")
