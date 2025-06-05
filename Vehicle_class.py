@@ -9,9 +9,11 @@ class Vehicle:
         self.battery_capacity = 0
         self.battery_SOC = 0.0
         self.battery_size = 20
+        self.battery_peak_V = 900
         self.maximum_charge_rate = 1700
         self.charging_efficiency = 0.9
         self.index = -1             # -1 for unassigned
+        self.battery_type = 0       # 0 = NMC, 1 = LTO, 2 = LMO
         
         self.current_time = 0
         self.commute_duration = 1800
@@ -64,9 +66,12 @@ class Vehicle:
         help_string = help_string + "battery_capacity: \t\tcurrent energy stored in the battery in kWh \n"
         help_string = help_string + "battery_SOC: \t\t\tState of charge of the battery as a percentage \n"
         help_string = help_string + "battery_size: \t\t\tmaximum energy stored in the battery in kWh \n"
+        help_string = help_string + "battery_type: \t\t\tan integer indicating battery chemistry (0 = NMC, 1 = LTO, 2 = LMO)\n"
+        help_string = help_string + "battery_peak_V: \t\tthe battery voltage at peak power for DC Fast Charging\n"
         help_string = help_string + "maximum_charge_rate:\tthe highest allowed charge rate in Watts \n"
         help_string = help_string + "charging_efficiency: \tcharging efficiency of the vehicle expressed as a decimal \n"
         help_string = help_string + "index: \t\t\t\t\tan integer assigned to this vehicle for a label (-1 indicates it is unset)\n"
+        
         
         help_string = help_string + "current_time: \t\t\tseconds that have passed since the start of the simulation\n"
         help_string = help_string + "commute_duration: \t\ttime to drive between work and home in seconds\n"

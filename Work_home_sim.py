@@ -107,23 +107,24 @@ def combine_loads(time1,load1,time2,load2):
                 combined_load.append(load1[i-1]+load2[j])
                 j += 1
     return time, combined_load
+
 ##############################################################################
 #################################### Main ####################################
 ##############################################################################
-
 time = [0]
 load = [0.0]
-interval = 300
+interval = 60
 prev_sim_time = 0
 sim_time = 0
 sim_end = int(86400*2)
 work_chargers_count = 0
-vehicle_c_rating = 1
+vehicle_c_rating = 2.5
 M = Manager()
 for i in range(work_chargers_count):
     C = Charger()
     C.maximum_load = 150000 # 150kw max
     # C.maximum_load = 0
+    C.DC = True
     M.chargers.append(C)
 queue_length = []
 queue_time = []
@@ -138,7 +139,7 @@ dir_for_glm ='test.glm'
 glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
-################## Read in Vehicles #######################
+############################ Read in Vehicles #################################
 file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
 EV_dict_raw = json.load(file)
 EV_dict = EV_dict_raw['ev']
@@ -191,7 +192,7 @@ for i in EV_dict:
     Chargers.append(C)
     
 
-############################### New #########################################
+############################# Main loop #######################################
 sim_time = 0
 while sim_time <= sim_end:
     next_sim_time = sim_end
@@ -255,61 +256,9 @@ while sim_time <= sim_end:
     sim_time = min(next_interval_time,next_sim_time,sim_end)
     if prev_sim_time == sim_end:
         sim_time += 1
-#############################################################################
-
-############################### Old #########################################
-
-# for C in Chargers:
-#     sim_time = 0
-#     A = C.current_vehicle
-#     while sim_time <= sim_end:
-#         # Update vehicle for previous interval
-#         current_interval = sim_time - prev_sim_time
-#         if current_interval > 0:
-#             if A.location == "HOME":
-#                 if C.occupied:
-#                     C.charge(current_interval)
-#             if ((A.location == "DRIVING_WORK") or (A.location == "DRIVING_HOME")):
-#                 A.battery_capacity -= (((A.commute_distance/A.commute_duration) / A.mileage_efficiency) * current_interval)
-#                 A.update_SOC()
-#                 A.current_time = sim_time
-#                 A.update_log()
-#                 C.current_time = A.current_time
-#                 C.update_load()
-#             if A.location == "WORK":
-#                 A.current_time += current_interval
-#                 C.current_time = A.current_time
-#                 C.update_load()
-        
-#         # Check for loaction change
-#         for x in A.schedule:
-#             if x[0] == sim_time:
-#                 # update next_state_change
-#                 if A.schedule.index(x) < (len(A.schedule) - 1):
-#                     A.next_state_change = A.schedule[1 + A.schedule.index(x)][0]
-#                 else:
-#                     A.next_state_change = sim_end
-#                 # No location Change
-#                 if A.location == x[1]:
-#                     A.location = x[1]
-#                 # Location change
-#                 else:
-#                     A.location = x[1]
-#                     if x[1] == "HOME":
-#                         C.add_vehicle(A)
-#                     if x[1] == "DRIVING_WORK":
-#                         if C.occupied:
-#                             C.remove_vehicle()
-        
-#         # Update next sim time
-#         prev_sim_time = sim_time
-#         next_interval_time = (math.floor(prev_sim_time / interval) + 1) * interval
-#         sim_time = min(next_interval_time,A.next_state_change,sim_end)
-#         if prev_sim_time == sim_end:
-#             sim_time += 1
-            
-##############################################################################
+###############################################################################
     
+############################# Plotting ########################################
 plot_time, plot_load = agregate_loads(Chargers, sim_end, interval)
 plot_time = np.array(plot_time)
 plot_time = plot_time / 3600
@@ -345,12 +294,18 @@ plt.ylabel("Length of Charging Queue")
 plt.grid()
 plt.show()
 
-# Sanity Check
+############################ Sanity Check #####################################
 plot_load = plot_load * 0.9
-energy_input = numerical_integration(plot_time, plot_load)
+energy_input = numerical_integration(plot_time*3600, plot_load*1000)
 energy_input = (energy_input / 3600) / 1000                         # W*s -> kW * h
 avg_distance_per_car = (energy_input * 3.846) / 100               # 3.846 mi/kWhr, 100 vehicles
-avg_distance_per_car_per_day = avg_distance_per_car / 7             # simulation for a week
+avg_distance_per_car_per_day = avg_distance_per_car / 2             # simulation for 2 days
+
+plot_load_combined = np.array(plot_load_combined) * 0.9
+energy_input_total = numerical_integration(np.array(plot_time_combined)*3600,np.array(plot_load_combined)*1000)
+energy_input_total = (energy_input_total / 3600) / 1000
+avg_distance_per_car_total = (energy_input_total * 3.846) / 100
+avg_distance_per_car_per_day_total = avg_distance_per_car_total / 2
 
 energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
 energy_input_d = (energy_input_d / 3600) / 1000
