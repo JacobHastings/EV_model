@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 import json
 import glmanip
+import helics as h
 
 from Vehicle_class import Vehicle
 from Charger_class import Charger
@@ -48,7 +49,8 @@ def output_from_gridlabd():
     return plot_time, plot_charge, plot_house
 
 def output_from_gridlabd_v2():
-    filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
+    # filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
+    filename = "C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
     raw_data_charger = pd.read_csv(filename,skiprows=8)
     clean_timestamp_EST(raw_data_charger)
     
@@ -114,11 +116,14 @@ def combine_loads(time1,load1,time2,load2):
 time = [0]
 load = [0.0]
 interval = 60
+sim_interval = 300
 prev_sim_time = 0
 sim_time = 0
 sim_end = int(86400*2)
 work_chargers_count = 0
 vehicle_c_rating = 2.5
+GLD_compare = False
+include_helics = False
 M = Manager()
 for i in range(work_chargers_count):
     C = Charger()
@@ -132,15 +137,18 @@ queue_time = []
 #C = Charger()
 Chargers = []
 
-plot_time_d, plot_charge_d = output_from_gridlabd_v2()
+if GLD_compare:
+    plot_time_d, plot_charge_d = output_from_gridlabd_v2()
 
 basedir = ""
-dir_for_glm ='test.glm'
+# dir_for_glm ="C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/test.glm"
+dir_for_glm = "E:/Working_dir_Jacob/EV_model/test.glm"
 glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ############################ Read in Vehicles #################################
-file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
+# file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
+file = open("E:/Working_dir_Jacob/EV_dict/Substation_2_glm_dict.json")
 EV_dict_raw = json.load(file)
 EV_dict = EV_dict_raw['ev']
 
@@ -194,6 +202,7 @@ for i in EV_dict:
 
 ############################# Main loop #######################################
 sim_time = 0
+t_next_gld_exchange = 0
 while sim_time <= sim_end:
     next_sim_time = sim_end
     current_interval = sim_time - prev_sim_time
@@ -253,7 +262,17 @@ while sim_time <= sim_end:
     # Update next sim time
     prev_sim_time = sim_time
     next_interval_time = (math.floor(prev_sim_time / interval) + 1) * interval
+    
     sim_time = min(next_interval_time,next_sim_time,sim_end)
+    
+    t_next_gld_exchange = (math.floor(prev_sim_time / sim_interval) + 1) * sim_interval
+    if sim_time == t_next_gld_exchange:
+        time_granted = 0
+        if include_helics:
+            while time_granted < sim_time:
+                time_granted = h.helicsFederateRequestTime(fed, t_next_gld_exchange)
+            # Publish all EVs
+    print(sim_time)
     if prev_sim_time == sim_end:
         sim_time += 1
 ###############################################################################
@@ -295,24 +314,24 @@ plt.grid()
 plt.show()
 
 ############################ Sanity Check #####################################
-plot_load = plot_load * 0.9
-energy_input = numerical_integration(plot_time*3600, plot_load*1000)
-energy_input = (energy_input / 3600) / 1000                         # W*s -> kW * h
-avg_distance_per_car = (energy_input * 3.846) / 100               # 3.846 mi/kWhr, 100 vehicles
-avg_distance_per_car_per_day = avg_distance_per_car / 2             # simulation for 2 days
+# plot_load = plot_load * 0.9
+# energy_input = numerical_integration(plot_time*3600, plot_load*1000)
+# energy_input = (energy_input / 3600) / 1000                         # W*s -> kW * h
+# avg_distance_per_car = (energy_input * 3.846) / 100               # 3.846 mi/kWhr, 100 vehicles
+# avg_distance_per_car_per_day = avg_distance_per_car / 2             # simulation for 2 days
 
-plot_load_combined = np.array(plot_load_combined) * 0.9
-energy_input_total = numerical_integration(np.array(plot_time_combined)*3600,np.array(plot_load_combined)*1000)
-energy_input_total = (energy_input_total / 3600) / 1000
-avg_distance_per_car_total = (energy_input_total * 3.846) / 100
-avg_distance_per_car_per_day_total = avg_distance_per_car_total / 2
+# plot_load_combined = np.array(plot_load_combined) * 0.9
+# energy_input_total = numerical_integration(np.array(plot_time_combined)*3600,np.array(plot_load_combined)*1000)
+# energy_input_total = (energy_input_total / 3600) / 1000
+# avg_distance_per_car_total = (energy_input_total * 3.846) / 100
+# avg_distance_per_car_per_day_total = avg_distance_per_car_total / 2
 
-energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
-energy_input_d = (energy_input_d / 3600) / 1000
-avg_distance_per_car_d = (energy_input_d * 3.846) / 100
-avg_distance_per_car_per_day_d = avg_distance_per_car_d / 7
+# energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
+# energy_input_d = (energy_input_d / 3600) / 1000
+# avg_distance_per_car_d = (energy_input_d * 3.846) / 100
+# avg_distance_per_car_per_day_d = avg_distance_per_car_d / 7
 
-avg_dist_actual = 0.0
-for C in Chargers:
-    avg_dist_actual += 2*C.current_vehicle.commute_distance
-avg_dist_actual = avg_dist_actual / 100
+# avg_dist_actual = 0.0
+# for C in Chargers:
+#     avg_dist_actual += 2*C.current_vehicle.commute_distance
+# avg_dist_actual = avg_dist_actual / 100

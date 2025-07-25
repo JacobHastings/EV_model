@@ -5,10 +5,13 @@ import pandas as pd
 import numpy as np
 import json
 import glmanip
+import copy
 
 from Vehicle_class import Vehicle
 from Charger_class import Charger
 
+import os
+os.environ['TESPDIR'] = r"E:\Working_dir_Jacob\tesp"
 
 def clean_timestamp(dataframe):
     dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' PDT')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
@@ -16,6 +19,8 @@ def clean_timestamp(dataframe):
 def clean_timestamp_EST(dataframe):
     dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' EST')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
 
+def clean_timestamp_EDT(dataframe):
+    dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' EDT')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
 
 def output_from_gridlabd():
     filename = "C:/Users/jacob/Documents/MatpowerWrapper/EVtest/driverfile.csv"
@@ -47,9 +52,10 @@ def output_from_gridlabd():
     return plot_time, plot_charge, plot_house
 
 def output_from_gridlabd_v2():
-    filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
+    # filename = "E:/Working_dir_Jacob/EV_dict/EV_charger_outputR2_12_47_3.csv"
+    filename = "E:/Working_dir_Jacob/EV_dict/EV_charger_rate_output.csv"
     raw_data_charger = pd.read_csv(filename,skiprows=8)
-    clean_timestamp_EST(raw_data_charger)
+    clean_timestamp_EDT(raw_data_charger)
     
     time = raw_data_charger['# timestamp']
     # Convert timestamps into seconds since start of simulation
@@ -90,12 +96,14 @@ def numerical_integration(X,Y):
 #################################### Main ####################################
 ##############################################################################
 
+helics_flag = True
+
 time = [0]
 load = [0.0]
 interval = 300
 prev_sim_time = 0
 sim_time = 0
-sim_end = 86400*7
+sim_end = 86400*2
 
 A = Vehicle()
 A.index = 1
@@ -117,16 +125,70 @@ Chargers = []
 plot_time_d, plot_charge_d = output_from_gridlabd_v2()
 
 basedir = ""
-dir_for_glm ='test.glm'
+dir_for_glm ="E:/Working_dir_Jacob/EV_dict/Substation_2.glm"
 glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ################## Read in Vehicles #######################
-file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
+# file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
+file = open("E:/Working_dir_Jacob/EV_dict/Substation_2_glm_dict.json")
 EV_dict_raw = json.load(file)
 EV_dict = EV_dict_raw['ev']
 
 EV_dict = model['evcharger_det']
+
+if helics_flag:
+    helics_config_py = {}
+    helics_config_py['name'] = 'py'
+    helics_config_py['coreName'] = 'py'
+    helics_config_py['log_level'] = 'warning'
+    helics_config_py['coreType'] = 'zmq'
+    helics_config_py['period'] = '1'
+    helics_config_py['publications'] = [];
+    helics_config_py['subscriptions'] = [];
+    helics_config_gld = copy.deepcopy(helics_config_py)
+    helics_config_py['timeDelta'] = '0'
+    helics_config_gld['name'] = 'gld'
+    helics_config_gld['coreName'] = 'gld'
+    helics_config_gld['only_transmit_on_change'] = 'false'
+    
+    model_new = copy.deepcopy(model)
+    # Hardcoded temp fix to remove building EVs attached to non-triplex meters
+    del model_new['evcharger_det']['meter_bldg_28_ev']
+    # Create triplex loads to replace evcharger objects
+    for EV_name in model_new['evcharger_det']:
+        model_new['triplex_load'][EV_name] = {}
+        # glmanip does the name automatically
+        house_name = model['evcharger_det'][EV_name]['parent']
+        meter_name = model['house'][house_name]['parent']
+        model_new['triplex_load'][EV_name]['parent'] = meter_name
+        model_new['triplex_load'][EV_name]['phases'] = model['triplex_meter'][meter_name]['phases']
+        model_new['triplex_load'][EV_name]['base_power_12'] = '10'
+        model_new['triplex_load'][EV_name]['power_fraction_12'] = '1'
+        model_new['triplex_load'][EV_name]['power_pf_12'] = '1'
+        # Update helics config files
+        helics_config_py['publications'].append({'key':str(EV_name)})
+        helics_config_gld['subscriptions'].append({'key':str(helics_config_py['name'] + '/' + EV_name),
+                                                   'type':str('double'),
+                                                   'unit':str('W'),
+                                                   'info':{'object':str(EV_name),
+                                                           'property':str('base_power_12')
+                                                           }
+                                                   })
+    # Delete previous evcharger objects
+    del model_new['evcharger_det']
+    
+    
+    ofn = "E:/Working_dir_Jacob/EV_dict/Substation_2_mod.glm"
+    glmanip.write(ofn, model_new, clock, directives, modules, classes)
+    ofn = "E:/Working_dir_Jacob/EV_dict/helics_config_py.json"
+    out_file = open(ofn, "w")
+    json.dump(helics_config_py, out_file, indent=4)
+    out_file.close()
+    ofn = "E:/Working_dir_Jacob/EV_dict/helics_config_gld.json"
+    out_file = open(ofn, "w")
+    json.dump(helics_config_gld, out_file, indent=4)
+    out_file.close()
 
 EV_index = 0
 for i in EV_dict:
@@ -134,7 +196,8 @@ for i in EV_dict:
     # C.name = EV_dict[i]['name']
     C.name = i
     # C.maximum_load = EV_dict[i]['max_charge'] / EV_dict[i]['efficiency']
-    C.maximum_load = float(EV_dict[i]['maximum_charge_rate']) / float(EV_dict[i]['charging_efficiency'])
+    # C.maximum_load = float(EV_dict[i]['maximum_charge_rate']) / float(EV_dict[i]['charging_efficiency'])
+    C.maximum_load = float(EV_dict[i]['maximum_charge_rate'])
     V = Vehicle()
     
     V.battery_SOC = float(EV_dict[i]['battery_SOC'])
@@ -146,7 +209,8 @@ for i in EV_dict:
     # V.mileage_efficiency = float(EV_dict[i]['miles_per_kwh'])
     V.mileage_efficiency = float(EV_dict[i]['mileage_efficiency'])
     # V.maximum_charge_rate = float(EV_dict[i]['max_charge'])
-    V.maximum_charge_rate = float(EV_dict[i]['maximum_charge_rate'])
+    # V.maximum_charge_rate = float(EV_dict[i]['maximum_charge_rate'])
+    V.maximum_charge_rate = float(EV_dict[i]['maximum_charge_rate']) * float(EV_dict[i]['charging_efficiency'])
     
     V.index = EV_index
     EV_index += 1
@@ -171,44 +235,6 @@ for i in EV_dict:
     
     C.add_vehicle(V)
     Chargers.append(C)
-
-
-
-# (Vehicle, Charging time, Charging rate)
-# Vehicle_queue = [(B,4000,1200),(A,10000,0)]
-
-# while len(Vehicle_queue) > 0:
-#     C.add_vehicle(Vehicle_queue[0][0])
-#     C.current_charging_rate = Vehicle_queue[0][2]
-#     print("Vehicle number: {}\nStarting SOC: {}%\nCharge time: {} seconds".format(C.current_vehicle.index,C.current_vehicle.battery_SOC,Vehicle_queue[0][1]))
-#     C.charge(Vehicle_queue[0][1])
-#     time.append(time[len(time)-1]+Vehicle_queue[0][1])
-#     load.append(C.load)
-#     print("Ending SOC: {}%\nLoad: {} Watts\n".format(C.current_vehicle.battery_SOC,C.load))
-#     C.remove_vehicle()
-#     del Vehicle_queue[0]
-
-
-# C.add_vehicle(A)
-# print("Battery at {}%".format(C.current_vehicle.battery_SOC))
-
-# while(C.current_vehicle.battery_SOC < 100):
-#     print("Charging 1 hour")
-#     C.charge(3600)
-#     time.append(time[len(time)-1]+3600)
-#     load.append(C.load)
-#     print("Charging rate: {} Watts".format(C.current_charging_rate))
-#     print("Load: {} Watts".format(C.load))
-#     print("Battery at {}%".format(C.current_vehicle.battery_SOC))
-    
-# C.remove_vehicle()
-
-# plt.plot(time,load)
-# plt.show()
-
-# C.add_vehicle(A)
-# A.set_day_schedule(sim_end)
-# A.next_state_change = A.schedule[1][0]
 
 
 for C in Chargers:
@@ -264,7 +290,7 @@ plot_time, plot_load = agregate_loads(Chargers, sim_end, interval)
 plot_time = np.array(plot_time)
 # plot_time = plot_time / 3600
 plot_load = np.array(plot_load)
-plot_load = plot_load * 0.9
+# plot_load = plot_load * 0.9
 # plot_load = plot_load / 1000
 
 # plot_time = []
@@ -280,26 +306,29 @@ plot_load = plot_load * 0.9
 
 # #plot_diff = plot_charge_d - plot_load
     
-plt.plot(plot_time,plot_load)
-# plt.plot(plot_time_d,plot_charge_d)
-# labels = ['Python load','Gridlab-D Load']
-# plt.legend(labels)
-plt.xlabel("Time (sec)")
-plt.ylabel("Combined Charging Rate (Watts)")
+plt.plot(plot_time/3600,plot_load/1000)
+plt.plot(plot_time_d/3600,plot_charge_d/1000)
+labels = ['New Simulation','Gridlab-D Simulation']
+plt.legend(labels,loc='upper right')
+plt.xlabel("Time (hour)")
+plt.ylabel("Combined Charging Rate (kW)")
+plt.grid()
 plt.show()
 
 
 energy_input = numerical_integration(plot_time, plot_load)
-energy_input = (energy_input / 3600) / 1000                         # W*s -> kW * h
-avg_distance_per_car = (energy_input * 3.846) / 100               # 3.846 mi/kWhr, 100 vehicles
-avg_distance_per_car_per_day = avg_distance_per_car / 7             # simulation for a week
+energy_input = (energy_input / 3600) / 1000                             # W*s -> kW * h
+avg_distance_per_car = (energy_input * 3.846) / len(Chargers)           # 3.846 mi/kWhr
+avg_distance_per_car_per_day = avg_distance_per_car / (sim_end/86400)   # simulation for x days
 
 energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
 energy_input_d = (energy_input_d / 3600) / 1000
-avg_distance_per_car_d = (energy_input_d * 3.846) / 100
-avg_distance_per_car_per_day_d = avg_distance_per_car_d / 7
+avg_distance_per_car_d = (energy_input_d * 3.846) / len(Chargers)
+avg_distance_per_car_per_day_d = avg_distance_per_car_d / (sim_end/86400)
 
 avg_dist_actual = 0.0
 for C in Chargers:
     avg_dist_actual += 2*C.current_vehicle.commute_distance
 avg_dist_actual = avg_dist_actual / 100
+
+pct_energy_error = ((energy_input_d - energy_input) / energy_input) * 100
