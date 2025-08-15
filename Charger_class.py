@@ -72,15 +72,15 @@ class Charger:
         # Set DC charging rate based on SOC
         if self.DC:
             self.set_DC_charge_rate()
+        else:
+            # Check if AC charging is at the SOC threshold for constant Voltage mode for its battery type
+            if ((self.current_vehicle.battery_type == 0 and self.current_vehicle.battery_SOC > 93) or (self.current_vehicle.battery_type == 1 and self.current_vehicle.battery_SOC > 96) or (self.current_vehicle.battery_type == 2 and self.current_vehicle.battery_SOC > 76.1)):
+                self.set_AC_charge_rate()
             
-        # Check if AC charging is at the SOC threshold for constant Voltage mode for its battery type
-        elif ((self.current_vehicle.battery_type == 0 and self.current_vehicle.battery_SOC > 93) or (self.current_vehicle.battery_type == 1 and self.current_vehicle.battery_SOC > 96) or (self.current_vehicle.battery_type == 2 and self.current_vehicle.battery_SOC > 76.1)):
-            self.set_AC_charge_rate()
-        
-        # Set/check charging rate (nonzero/negative, doesn't exceed vehicle parameters, doesn't exceed charger parameters)
-        if (self.current_charging_rate <= 0) or (self.current_charging_rate > self.current_vehicle.maximum_charge_rate) or (self.current_charging_rate > (self.maximum_load * self.current_vehicle.charging_efficiency)):
-            # Default to maximum if not set
-            self.current_charging_rate = min(self.current_vehicle.maximum_charge_rate, (self.maximum_load * self.current_vehicle.charging_efficiency))
+            # Set/check charging rate (nonzero/negative, doesn't exceed vehicle parameters, doesn't exceed charger parameters)
+            if (self.current_charging_rate <= 0) or (self.current_charging_rate > self.current_vehicle.maximum_charge_rate) or (self.current_charging_rate > (self.maximum_load * self.current_vehicle.charging_efficiency)):
+                # Default to maximum if not set
+                self.current_charging_rate = min(self.current_vehicle.maximum_charge_rate, (self.maximum_load * self.current_vehicle.charging_efficiency))
         
         # Charge battery
         # Check for overcharge

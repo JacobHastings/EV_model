@@ -9,9 +9,9 @@ clock {
 #set relax_naming_rules=1
 #set warn=0
 
-#include "C:\Users\jacob\Documents\MatpowerWrapper\tesp\data\schedules\appliance_schedules.glm"
-#include "C:\Users\jacob\Documents\MatpowerWrapper\tesp\data\schedules\water_and_setpoint_schedule_v5.glm"
-#include "C:\Users\jacob\Documents\MatpowerWrapper\tesp\data\schedules\commercial_schedules.glm"
+#include "E:\Working_dir_Jacob\tesp\data\schedules\appliance_schedules.glm"
+#include "E:\Working_dir_Jacob\tesp\data\schedules\water_and_setpoint_schedule_v5.glm"
+#include "E:\Working_dir_Jacob\tesp\data\schedules\commercial_schedules.glm"
 
 module climate;
 //module connection;

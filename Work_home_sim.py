@@ -123,7 +123,7 @@ sim_end = int(86400*2)
 work_chargers_count = 0
 vehicle_c_rating = 2.5
 GLD_compare = False
-include_helics = False
+include_helics = True
 M = Manager()
 for i in range(work_chargers_count):
     C = Charger()
@@ -142,7 +142,8 @@ if GLD_compare:
 
 basedir = ""
 # dir_for_glm ="C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/test.glm"
-dir_for_glm = "E:/Working_dir_Jacob/EV_model/test.glm"
+# dir_for_glm = "E:/Working_dir_Jacob/EV_model/test.glm"
+dir_for_glm = "E:/Working_dir_Jacob/EV_dict/Substation_2.glm"
 glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
@@ -199,6 +200,11 @@ for i in EV_dict:
     C.add_vehicle(V)
     Chargers.append(C)
     
+########################### Set up Helics #####################################
+if include_helics:
+    fed = h.helicsCreateCombinationFederateFromConfig("helics_config_py.json")
+# file = open("E:/Working_dir_Jacob/EV_dict/helics_config_py.json")
+# Helics_config_raw = json.load(file)
 
 ############################# Main loop #######################################
 sim_time = 0
@@ -272,7 +278,15 @@ while sim_time <= sim_end:
             while time_granted < sim_time:
                 time_granted = h.helicsFederateRequestTime(fed, t_next_gld_exchange)
             # Publish all EVs
-    print(sim_time)
+            # Iterate through Home Chargers
+            for C in Chargers:
+                pub = C.name
+                h.helicsPublicationPublishDouble(pub, C.current_charging_rate)
+            # Iterate through work chargers
+            for C in M.chargers:
+                pub = C.name
+                h.helicsPublicationPublishDouble(pub, C.current_charging_rate)
+    # print(sim_time)
     if prev_sim_time == sim_end:
         sim_time += 1
 ###############################################################################
