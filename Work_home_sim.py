@@ -18,6 +18,8 @@ def clean_timestamp(dataframe):
 def clean_timestamp_EST(dataframe):
     dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' EST')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
 
+def clean_timestamp_EDT(dataframe):
+    dataframe['# timestamp'] = [datetime.datetime.strptime(date.split(' EDT')[0], "%Y-%m-%d %H:%M:%S") for date in dataframe['# timestamp']]
 
 def output_from_gridlabd():
     filename = "C:/Users/jacob/Documents/MatpowerWrapper/EVtest/driverfile.csv"
@@ -48,11 +50,12 @@ def output_from_gridlabd():
     
     return plot_time, plot_charge, plot_house
 
-def output_from_gridlabd_v2():
+def output_from_gridlabd_v2(filename):
     # filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
-    filename = "C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
+    # filename = "C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
     raw_data_charger = pd.read_csv(filename,skiprows=8)
-    clean_timestamp_EST(raw_data_charger)
+    # clean_timestamp_EST(raw_data_charger)
+    clean_timestamp_EDT(raw_data_charger)
     
     time = raw_data_charger['# timestamp']
     # Convert timestamps into seconds since start of simulation
@@ -110,6 +113,49 @@ def combine_loads(time1,load1,time2,load2):
                 j += 1
     return time, combined_load
 
+def average_load_interval(load_log, sim_time, sim_interval):
+    avg_out = 0
+    # Generate list of all changes over last interval
+    short_log = [point for point in load_log if (sim_time-sim_interval) <= point[0] < sim_time]
+    # If no changes in last interval, return previous setting
+    if len(short_log) < 1:
+        for i in range(len(load_log)):
+            if load_log[i][0] < sim_time:
+                prev_i = i
+            else:
+                break
+        return load_log[prev_i][1]
+    
+    # If there are changes in the last interval, calculate weighted avg
+    for i in range(len(short_log)):
+        # First entry not at beginning of interval
+        if i==0 and (short_log[i][0] > (sim_time - sim_interval)):
+            # Determine previous setting
+            for j in range(len(load_log)):
+                if load_log[j][0] < sim_time:
+                    prev_j = j
+                else:
+                    break
+            avg_out += load_log[prev_j][1] * (short_log[i][0] - (sim_time-sim_interval))
+        # Last entry
+        if i==(len(short_log)-1):
+            avg_out += short_log[i][1] * (sim_time - short_log[i][0])
+        # Normal entry
+        else:
+            avg_out += short_log[i][1] * (short_log[i+1][0] - short_log[i][0])
+    # Normalize        
+    avg_out = avg_out / sim_interval
+    
+    return avg_out
+        
+def create_broker(simulators,port):
+    initstring = "--federates=" + str(simulators) + " --port=" + str(port)
+    broker = h.helicsCreateBroker("zmq", "", initstring)
+    isconnected = h.helicsBrokerIsConnected(broker)
+    if isconnected == 1:
+        pass
+    return broker
+
 ##############################################################################
 #################################### Main ####################################
 ##############################################################################
@@ -124,6 +170,7 @@ work_chargers_count = 0
 vehicle_c_rating = 2.5
 GLD_compare = False
 include_helics = True
+simulators = 2
 M = Manager()
 for i in range(work_chargers_count):
     C = Charger()
@@ -133,12 +180,14 @@ for i in range(work_chargers_count):
     M.chargers.append(C)
 queue_length = []
 queue_time = []
+Charge_log = []
+Charge_log_time = []
 
 #C = Charger()
 Chargers = []
 
 if GLD_compare:
-    plot_time_d, plot_charge_d = output_from_gridlabd_v2()
+    plot_time_d, plot_charge_d = output_from_gridlabd_v2("C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv")
 
 basedir = ""
 # dir_for_glm ="C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/test.glm"
@@ -200,11 +249,25 @@ for i in EV_dict:
     C.add_vehicle(V)
     Chargers.append(C)
     
+
 ########################### Set up Helics #####################################
 if include_helics:
+    # Hacky fix to remove unsupported meter type
+    del Chargers[56]
+    
+    file = open("helics_config_py.json")
+    Helics_config_raw = json.load(file)
+    port = Helics_config_raw['broker_port']
+    
+    broker = create_broker(simulators,port)
+    print("Broker created")
+    
     fed = h.helicsCreateCombinationFederateFromConfig("helics_config_py.json")
-# file = open("E:/Working_dir_Jacob/EV_dict/helics_config_py.json")
-# Helics_config_raw = json.load(file)
+    status = h.helicsFederateEnterExecutingMode(fed)
+
+    substation_log_load = []
+    substation_log_real = []
+    substation_log_time = []
 
 ############################# Main loop #######################################
 sim_time = 0
@@ -272,25 +335,53 @@ while sim_time <= sim_end:
     sim_time = min(next_interval_time,next_sim_time,sim_end)
     
     t_next_gld_exchange = (math.floor(prev_sim_time / sim_interval) + 1) * sim_interval
-    if sim_time == t_next_gld_exchange:
+    if sim_time == t_next_gld_exchange and sim_time < sim_end:
         time_granted = 0
+        Charge_avg_total = 0
         if include_helics:
             while time_granted < sim_time:
                 time_granted = h.helicsFederateRequestTime(fed, t_next_gld_exchange)
             # Publish all EVs
             # Iterate through Home Chargers
             for C in Chargers:
-                pub = C.name
-                h.helicsPublicationPublishDouble(pub, C.current_charging_rate)
+                pub_key = C.name
+                pub_key = Helics_config_raw['name'] + "/" + pub_key
+                pub_obj = h.helicsFederateGetPublication(fed, pub_key)
+                # Calculate avg charge rate over last sim interval
+                Charge_avg = average_load_interval(C.load_log, sim_time, sim_interval)
+                h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
+                Charge_avg_total += Charge_avg
             # Iterate through work chargers
             for C in M.chargers:
-                pub = C.name
-                h.helicsPublicationPublishDouble(pub, C.current_charging_rate)
-    # print(sim_time)
+                pub_key = C.name
+                pub_key = Helics_config_raw['name'] + "/" + pub_key
+                pub_obj = h.helicsFederateGetPublication(fed, pub_key)
+                Charge_avg = average_load_interval(C.load_log, sim_time, sim_interval)
+                h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
+            # Get substation load
+            for i, sub in enumerate(Helics_config_raw['subscriptions']):
+                if 'distribution_load' in sub['key']:
+                    sub_key = Helics_config_raw['subscriptions'][i]['key']
+            # sub_object = h.helicsFederateGetSubscription(fed,sub_key)
+            sub_object = h.helicsFederateGetInputByTarget(fed,sub_key)
+            substation_load = h.helicsInputGetComplex(sub_object)
+            substation_log_load.append(substation_load)
+            substation_log_real.append(substation_load.real)
+            substation_log_time.append(sim_time)
+        # Record Charging Interval
+        Charge_log.append(Charge_avg_total/1000)
+        Charge_log_time.append(sim_time/3600)
+        
+        if ((sim_time % 7200) == 0):
+            print(sim_time)
+        
     if prev_sim_time == sim_end:
         sim_time += 1
 ###############################################################################
     
+if include_helics:
+    h.helicsCloseLibrary()
+
 ############################# Plotting ########################################
 plot_time, plot_load = agregate_loads(Chargers, sim_end, interval)
 plot_time = np.array(plot_time)
@@ -312,9 +403,14 @@ plt.plot(np.array(plot_time_combined),np.array(plot_load_combined))
 plt.plot(plot_time_m,plot_load_m)  
 plt.plot(plot_time,plot_load)
 
+EV_output_time, EV_output_load = output_from_gridlabd_v2('E:/Working_dir_Jacob/EV_dict/EV_charger_output.csv')
+EV_output_time = EV_output_time/3600
+EV_output_load = EV_output_load/1000
+plt.plot(EV_output_time,EV_output_load)
+
 # plt.plot(plot_time_d,plot_charge_d)
 # labels = ['Python load','Gridlab-D Load']
-labels = ['Combined','Work Chargers','Home Chargers']
+labels = ['Combined','Work Chargers','Home Chargers','GLD']
 plt.legend(labels)
 plt.xlabel("Time (hour)")
 plt.ylabel("Agregated Load (Kw)")
@@ -327,6 +423,27 @@ plt.ylabel("Length of Charging Queue")
 plt.grid()
 plt.show()
 
+plt.plot(Charge_log_time,Charge_log)
+EV_output_time, EV_output_load = output_from_gridlabd_v2('E:/Working_dir_Jacob/EV_dict/EV_charger_output.csv')
+EV_output_time = EV_output_time/3600
+EV_output_load = EV_output_load/1000
+plt.plot(EV_output_time,EV_output_load)
+
+labels = ['Home Chargers','GLD']
+plt.legend(labels)
+plt.xlabel("Time (hour)")
+plt.ylabel("Agregated Load (Kw)")
+plt.grid()
+plt.show()
+
+
+plot_substation_load_real = np.array(substation_log_real) / 1000
+plot_substation_log_time = np.array(substation_log_time) / 3600
+plt.plot(plot_substation_log_time,plot_substation_load_real)
+plt.xlabel("Time (hour)")
+plt.ylabel("Substation Load (KW)")
+plt.grid()
+plt.show()
 ############################ Sanity Check #####################################
 # plot_load = plot_load * 0.9
 # energy_input = numerical_integration(plot_time*3600, plot_load*1000)

@@ -109,6 +109,7 @@ def read(fn,basedir,buf=[]):
 		while re.match('\s*//',line) or re.match('\s+$',line):
 			line = fh.readline()
 		m = re.search('#\s?include\s+[\'"]?([^\.]+\.glm)',line)
+		m = ''
 		if m:
 			# Found dependency
 			if m.group(1) in glob.glob('*.glm'):
