@@ -51,8 +51,6 @@ def output_from_gridlabd():
     return plot_time, plot_charge, plot_house
 
 def output_from_gridlabd_v2(filename):
-    # filename = "C:/Users/jacob/Documents/MatpowerWrapper/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
-    # filename = "C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv"
     raw_data_charger = pd.read_csv(filename,skiprows=8)
     # clean_timestamp_EST(raw_data_charger)
     clean_timestamp_EDT(raw_data_charger)
@@ -168,7 +166,6 @@ sim_time = 0
 sim_end = int(86400*2)
 work_chargers_count = 0
 vehicle_c_rating = 2.5
-GLD_compare = False
 include_helics = True
 simulators = 2
 M = Manager()
@@ -186,19 +183,12 @@ Charge_log_time = []
 #C = Charger()
 Chargers = []
 
-if GLD_compare:
-    plot_time_d, plot_charge_d = output_from_gridlabd_v2("C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/EV_charger_rate_output.csv")
-
-basedir = ""
-# dir_for_glm ="C:/Users/jw.hastings/tesp/examples/capabilities/feeder-generator/test.glm"
-# dir_for_glm = "E:/Working_dir_Jacob/EV_model/test.glm"
-dir_for_glm = "E:/Working_dir_Jacob/EV_dict/Substation_2.glm"
-glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
+dir_for_glm = "Substation_2.glm"
+glm_lines = glmanip.read(dir_for_glm,"",buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ############################ Read in Vehicles #################################
-# file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
-file = open("E:/Working_dir_Jacob/EV_dict/Substation_2_glm_dict.json")
+file = open("Substation_2_glm_dict.json")
 EV_dict_raw = json.load(file)
 EV_dict = EV_dict_raw['ev']
 
@@ -403,13 +393,11 @@ plt.plot(np.array(plot_time_combined),np.array(plot_load_combined))
 plt.plot(plot_time_m,plot_load_m)  
 plt.plot(plot_time,plot_load)
 
-EV_output_time, EV_output_load = output_from_gridlabd_v2('E:/Working_dir_Jacob/EV_dict/EV_charger_output.csv')
+EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
 EV_output_time = EV_output_time/3600
 EV_output_load = EV_output_load/1000
 plt.plot(EV_output_time,EV_output_load)
 
-# plt.plot(plot_time_d,plot_charge_d)
-# labels = ['Python load','Gridlab-D Load']
 labels = ['Combined','Work Chargers','Home Chargers','GLD']
 plt.legend(labels)
 plt.xlabel("Time (hour)")
@@ -424,7 +412,7 @@ plt.grid()
 plt.show()
 
 plt.plot(Charge_log_time,Charge_log)
-EV_output_time, EV_output_load = output_from_gridlabd_v2('E:/Working_dir_Jacob/EV_dict/EV_charger_output.csv')
+EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
 EV_output_time = EV_output_time/3600
 EV_output_load = EV_output_load/1000
 plt.plot(EV_output_time,EV_output_load)
@@ -444,6 +432,7 @@ plt.xlabel("Time (hour)")
 plt.ylabel("Substation Load (KW)")
 plt.grid()
 plt.show()
+
 ############################ Sanity Check #####################################
 # plot_load = plot_load * 0.9
 # energy_input = numerical_integration(plot_time*3600, plot_load*1000)
@@ -457,7 +446,7 @@ plt.show()
 # avg_distance_per_car_total = (energy_input_total * 3.846) / 100
 # avg_distance_per_car_per_day_total = avg_distance_per_car_total / 2
 
-# energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
+# # energy_input_d = numerical_integration(plot_time_d, plot_charge_d)
 # energy_input_d = (energy_input_d / 3600) / 1000
 # avg_distance_per_car_d = (energy_input_d * 3.846) / 100
 # avg_distance_per_car_per_day_d = avg_distance_per_car_d / 7

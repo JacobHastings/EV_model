@@ -1,0 +1,525 @@
+{
+    "name": "gld",
+    "coreName": "gld",
+    "loglevel": "warning",
+    "coreType": "zmq",
+    "period": "1",
+    "broker_port": "60000",
+    "publications": [
+        {
+            "key": "distribution_load",
+            "type": "complex",
+            "info": {
+                "object": "network_node",
+                "property": "distribution_load"
+            }
+        }
+    ],
+    "subscriptions": [
+        {
+            "key": "py/R2_12_47_3_tn_2_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_2_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_4_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_4_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_5_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_5_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_12_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_12_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_12_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_12_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_25_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_25_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_41_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_41_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_51_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_51_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_52_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_52_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_54_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_54_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_54_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_54_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_55_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_55_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_56_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_56_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_58_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_58_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_59_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_59_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_65_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_65_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_65_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_65_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_65_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_65_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_131_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_131_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_163_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_163_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_172_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_172_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_183_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_183_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_193_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_193_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_193_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_193_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_196_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_196_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_198_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_198_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_208_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_208_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_254_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_254_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_255_ev_7",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_255_ev_7",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_258_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_258_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_264_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_264_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_280_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_280_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_298_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_298_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_307_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_307_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_322_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_322_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_322_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_322_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_342_ev_8",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_342_ev_8",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_345_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_345_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_347_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_347_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_350_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_350_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_380_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_380_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_388_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_388_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_392_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_392_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_394_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_394_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_398_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_398_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_405_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_405_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_405_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_405_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_405_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_405_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_423_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_423_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_432_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_432_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_439_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_439_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_447_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_447_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_455_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_455_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_461_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_461_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_466_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_466_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "py/R2_12_47_3_tn_479_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R2_12_47_3_tn_479_ev_2",
+                "property": "base_power_12"
+            }
+        }
+    ],
+    "only_transmit_on_change": "false"
+}

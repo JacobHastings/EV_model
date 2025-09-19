@@ -15,9 +15,9 @@ broker_port = '60000'
 sim_interval = '300'
 ##################################################################
 
-basedir = ""
-dir_for_glm ="E:/Working_dir_Jacob/EV_dict/Substation_2.glm"
-glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
+dir_for_glm = "Substation_2.glm"
+
+glm_lines = glmanip.read(dir_for_glm,"",buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ################## Read in Vehicles #######################
@@ -112,13 +112,13 @@ for i, s in enumerate(directives):
     if '#set minimum_timestep=' in s:
         directives[i] = timestep_str
 
-ofn = "E:/Working_dir_Jacob/EV_dict/Substation_2_mod.glm"
+ofn = "Substation_2_mod.glm"
 glmanip.write(ofn, model_new, clock, directives, modules, classes)
-ofn = "E:/Working_dir_Jacob/EV_model/helics_config_py.json"
+ofn = "helics_config_py.json"
 out_file = open(ofn, "w")
 json.dump(helics_config_py, out_file, indent=4)
 out_file.close()
-ofn = "E:/Working_dir_Jacob/EV_dict/helics_config_gld.json"
+ofn = "helics_config_gld.json"
 out_file = open(ofn, "w")
 json.dump(helics_config_gld, out_file, indent=4)
 out_file.close()
