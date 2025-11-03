@@ -1,0 +1,1513 @@
+{
+    "name": "gld",
+    "coreName": "gld",
+    "coreType": "zmq",
+    "broker_port": "70000",
+    "loglevel": "warning",
+    "publications": [
+        {
+            "key": "distribution_load",
+            "type": "complex",
+            "info": {
+                "object": "network_node",
+                "property": "distribution_load"
+            }
+        }
+    ],
+    "subscriptions": [
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_2_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_2_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_6_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_6_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_9_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_9_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_14_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_14_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_29_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_29_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_30_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_30_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_31_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_31_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_31_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_31_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_31_ev_5",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_31_ev_5",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_32_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_32_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_32_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_32_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_34_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_34_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_35_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_35_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_36_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_36_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_39_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_39_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_40_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_40_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_41_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_41_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_41_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_41_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_41_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_41_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_42_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_42_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_44_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_44_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_45_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_45_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_45_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_45_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_60_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_60_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_65_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_65_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_72_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_72_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_73_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_73_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_74_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_74_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_74_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_74_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_76_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_76_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_77_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_77_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_84_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_84_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_85_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_85_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_86_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_86_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_89_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_89_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_90_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_90_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_91_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_91_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_92_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_92_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_92_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_92_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_95_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_95_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_98_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_98_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_101_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_101_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_104_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_104_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_105_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_105_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_111_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_111_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_123_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_123_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_123_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_123_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_124_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_124_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_129_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_129_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_130_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_130_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_137_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_137_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_146_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_146_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_155_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_155_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_158_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_158_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_163_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_163_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_164_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_164_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_166_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_166_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_167_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_167_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_173_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_173_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_179_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_179_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_180_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_180_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_181_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_181_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_185_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_185_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_187_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_187_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_188_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_188_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_188_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_188_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_189_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_189_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_190_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_190_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_194_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_194_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_194_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_194_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_210_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_210_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_211_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_211_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_222_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_222_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_229_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_229_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_240_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_240_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_240_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_240_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_241_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_241_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_241_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_241_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_243_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_243_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_243_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_243_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_244_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_244_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_246_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_246_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_251_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_251_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_253_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_253_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_253_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_253_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_253_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_253_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_256_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_256_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_257_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_257_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_258_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_258_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_259_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_259_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_264_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_264_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_265_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_265_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_268_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_268_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_290_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_290_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_296_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_296_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_296_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_296_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_297_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_297_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_299_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_299_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_303_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_303_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_304_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_304_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_305_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_305_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_305_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_305_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_306_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_306_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_306_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_306_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_306_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_306_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_307_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_307_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_311_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_311_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_313_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_313_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_313_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_313_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_316_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_316_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_342_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_342_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_352_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_352_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_354_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_354_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_363_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_363_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_366_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_366_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_368_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_368_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_368_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_368_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_369_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_369_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_373_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_373_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_387_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_387_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_387_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_387_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_390_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_390_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_390_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_390_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_392_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_392_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_396_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_396_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_397_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_397_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_398_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_398_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_399_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_399_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_400_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_400_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_400_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_400_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_401_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_401_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_407_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_407_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_408_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_408_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_409_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_409_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_413_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_413_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_415_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_415_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_416_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_416_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_418_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_418_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_419_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_419_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_420_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_420_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_421_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_421_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_426_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_426_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_428_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_428_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_429_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_429_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_437_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_437_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_438_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_438_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_438_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_438_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_439_ev_3",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_439_ev_3",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_443_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_443_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_444_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_444_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_444_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_444_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_445_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_445_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_447_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_447_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_449_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_449_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_449_ev_4",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_449_ev_4",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_453_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_453_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_455_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_455_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_459_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_459_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_462_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_462_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_464_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_464_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_465_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_465_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_465_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_465_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_466_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_466_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_473_ev_1",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_473_ev_1",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_473_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_473_ev_2",
+                "property": "base_power_12"
+            }
+        },
+        {
+            "key": "DSO_EV_sim/R4_12_47_1_tn_476_ev_2",
+            "type": "double",
+            "unit": "W",
+            "info": {
+                "object": "R4_12_47_1_tn_476_ev_2",
+                "property": "base_power_12"
+            }
+        }
+    ]
+}

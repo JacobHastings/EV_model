@@ -1,6 +1,6 @@
 {
-    "name": "py",
-    "coreName": "py",
+    "name": "DSO_EV_sim",
+    "coreName": "DSO_EV_sim",
     "loglevel": "warning",
     "coreType": "zmq",
     "period": "1",
