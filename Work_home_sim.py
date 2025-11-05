@@ -6,6 +6,7 @@ import numpy as np
 import json
 import glmanip
 import helics as h
+import os
 
 from Vehicle_class import Vehicle
 from Charger_class import Charger
@@ -166,7 +167,7 @@ sim_time = 0
 sim_end = int(86400*2)
 work_chargers_count = 0
 vehicle_c_rating = 2.5
-include_helics = True
+include_helics = False
 simulators = 2
 M = Manager()
 for i in range(work_chargers_count):
@@ -184,13 +185,19 @@ Charge_log_time = []
 Chargers = []
 
 dir_for_glm = "Substation_2.glm"
+
+# feeder_name = 'R2_12_47_3' # "Substation 2"
+feeder_name = 'R4_12_47_1'
+basedir = os.getcwd() + '\\' + 'distribution_simulation' + '\\'
+dir_for_glm = basedir + 'Substation_' + feeder_name+ '.glm'
+
 glm_lines = glmanip.read(dir_for_glm,"",buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ############################ Read in Vehicles #################################
-file = open("Substation_2_glm_dict.json")
-EV_dict_raw = json.load(file)
-EV_dict = EV_dict_raw['ev']
+# file = open("Substation_2_glm_dict.json")
+# EV_dict_raw = json.load(file)
+# EV_dict = EV_dict_raw['ev']
 
 EV_dict = model['evcharger_det']
 
@@ -228,6 +235,8 @@ for i in EV_dict:
     home_arrival = int(EV_dict[i]['arrival_at_home']) // 100
     # home_arrival += (( EV_dict[i]['arrival_home'] % 100 ) / 60)
     home_arrival += (( int(EV_dict[i]['arrival_at_home']) % 100 ) / 60)
+    if home_arrival < V.work_start:
+        home_arrival += 24
     V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
     # V.commute_distance = EV_dict[i]['daily_miles'] / 2
     V.commute_distance = float(EV_dict[i]['travel_distance']) / 2
@@ -237,6 +246,8 @@ for i in EV_dict:
     V.update_log()
     
     C.add_vehicle(V)
+    if V.location != 'HOME':
+        C.remove_vehicle()
     Chargers.append(C)
     
 
@@ -411,27 +422,28 @@ plt.ylabel("Length of Charging Queue")
 plt.grid()
 plt.show()
 
-plt.plot(Charge_log_time,Charge_log)
-EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
-EV_output_time = EV_output_time/3600
-EV_output_load = EV_output_load/1000
-plt.plot(EV_output_time,EV_output_load)
+if include_helics:
+    plt.plot(Charge_log_time,Charge_log)
+    EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
+    EV_output_time = EV_output_time/3600
+    EV_output_load = EV_output_load/1000
+    plt.plot(EV_output_time,EV_output_load)
+    
+    labels = ['Home Chargers','GLD']
+    plt.legend(labels)
+    plt.xlabel("Time (hour)")
+    plt.ylabel("Agregated Load (Kw)")
+    plt.grid()
+    plt.show()
 
-labels = ['Home Chargers','GLD']
-plt.legend(labels)
-plt.xlabel("Time (hour)")
-plt.ylabel("Agregated Load (Kw)")
-plt.grid()
-plt.show()
-
-
-plot_substation_load_real = np.array(substation_log_real) / 1000
-plot_substation_log_time = np.array(substation_log_time) / 3600
-plt.plot(plot_substation_log_time,plot_substation_load_real)
-plt.xlabel("Time (hour)")
-plt.ylabel("Substation Load (KW)")
-plt.grid()
-plt.show()
+if include_helics:
+    plot_substation_load_real = np.array(substation_log_real) / 1000
+    plot_substation_log_time = np.array(substation_log_time) / 3600
+    plt.plot(plot_substation_log_time,plot_substation_load_real)
+    plt.xlabel("Time (hour)")
+    plt.ylabel("Substation Load (KW)")
+    plt.grid()
+    plt.show()
 
 ############################ Sanity Check #####################################
 # plot_load = plot_load * 0.9
