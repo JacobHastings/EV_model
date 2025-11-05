@@ -50,6 +50,9 @@ def intialize_EV_gld_info(EV_dict, sim_end):
         home_arrival = int(EV_dict[i]['arrival_at_home']) // 100
         # home_arrival += (( EV_dict[i]['arrival_home'] % 100 ) / 60)
         home_arrival += (( int(EV_dict[i]['arrival_at_home']) % 100 ) / 60)
+        if home_arrival < V.work_start:
+            home_arrival += 24
+
         V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
         # V.commute_distance = EV_dict[i]['daily_miles'] / 2
         V.commute_distance = float(EV_dict[i]['travel_distance']) / 2
@@ -81,6 +84,7 @@ def simulate_EVs(Chargers, M, sim_time, current_interval, sim_end):
     
     next_EV_update_time = sim_end
     if current_interval > 0:
+        print('Simulating EVs .....')
         for C in Chargers:
             A = C.current_vehicle
             # Update vehicle for previous interval
@@ -98,6 +102,8 @@ def simulate_EVs(Chargers, M, sim_time, current_interval, sim_end):
                 A.current_time += current_interval
                 C.current_time = A.current_time
                 C.update_load()
+            
+            # print(C.load_log)
             # Check for loaction change
             for x in A.schedule:
                 if x[0] == sim_time:
