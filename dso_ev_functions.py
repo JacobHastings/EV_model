@@ -50,6 +50,8 @@ def intialize_EV_gld_info(EV_dict, sim_end):
         home_arrival = int(EV_dict[i]['arrival_at_home']) // 100
         # home_arrival += (( EV_dict[i]['arrival_home'] % 100 ) / 60)
         home_arrival += (( int(EV_dict[i]['arrival_at_home']) % 100 ) / 60)
+        if home_arrival < V.work_start:
+            home_arrival += 24
         V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
         # V.commute_distance = EV_dict[i]['daily_miles'] / 2
         V.commute_distance = float(EV_dict[i]['travel_distance']) / 2

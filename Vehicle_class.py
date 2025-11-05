@@ -40,21 +40,70 @@ class Vehicle:
             self.SOC_log.append((self.current_time,self.battery_SOC))
             
     def set_day_schedule(self,sim_end):
-        day = 0
+        # day = 0
         schedule_time = 0
-        self.schedule = [(schedule_time,"HOME")]                                    # Assume sim starts at home for now
-        days = math.ceil(sim_end/86400)                                             # Determine how many days to schedule
-        while day < days:
-            schedule_time = 86400*day                                               # Start at 0:00 for that day
-            schedule_time += ((self.work_start * 3600) - self.commute_duration)
+        # Calculate Durations
+        work_duration = round(self.work_duration * 3600)
+        home_duration = 86400 - (self.commute_duration * 2) - work_duration
+        # Set start Location and first schedule
+        # Home
+        if (self.work_start + self.work_duration + (self.commute_duration/3600)) <= 24:
+            self.schedule = [(schedule_time,"HOME")]
+            schedule_time = round((self.work_start*3600) - self.commute_duration)
             self.schedule.append((schedule_time,"DRIVING_WORK"))
-            schedule_time += self.commute_duration
+            loc = 1
+        # To work
+        elif self.work_start < (self.commute_duration/3600):
+            self.schedule = [(schedule_time,"DRIVING_WORK")]
+            self.location = 'DRIVING_WORK'
+            schedule_time = round(self.work_start*3600)
             self.schedule.append((schedule_time,"WORK"))
-            schedule_time += (self.work_duration*3600)
+            loc = 2
+        # Work
+        elif (self.work_start + self.work_duration) > 24:
+            self.schedule = [(schedule_time,"WORK")]
+            self.location = 'WORK'
+            schedule_time = round((self.work_start + self.work_duration - 24) * 3600)
             self.schedule.append((schedule_time,"DRIVING_HOME"))
-            schedule_time += self.commute_duration
+            loc = 3
+        # To home
+        else:
+            self.schedule = [(schedule_time,"DRIVING_HOME")]
+            self.location = 'DRIVING_HOME'
+            schedule_time = round(((self.work_start + self.work_duration - 24) * 3600) + self.commute_duration)
             self.schedule.append((schedule_time,"HOME"))
-            day += 1
+            loc = 0
+            
+        # Outdated Scheduler
+        # days = math.ceil(sim_end/86400)                                             # Determine how many days to schedule
+        # while day < days:
+        #     schedule_time = 86400*day                                               # Start at 0:00 for that day
+        #     schedule_time += ((self.work_start * 3600) - self.commute_duration)
+        #     self.schedule.append((schedule_time,"DRIVING_WORK"))
+        #     schedule_time += self.commute_duration
+        #     self.schedule.append((schedule_time,"WORK"))
+        #     schedule_time += (self.work_duration*3600)
+        #     self.schedule.append((schedule_time,"DRIVING_HOME"))
+        #     schedule_time += self.commute_duration
+        #     self.schedule.append((schedule_time,"HOME"))
+        #     day += 1
+            
+        while schedule_time <= sim_end:
+            
+            if loc == 0:
+                schedule_time += home_duration
+                self.schedule.append((schedule_time,"DRIVING_WORK"))
+            elif loc == 1:
+                schedule_time += self.commute_duration
+                self.schedule.append((schedule_time,"WORK"))
+            elif loc == 2:
+                schedule_time += work_duration
+                self.schedule.append((schedule_time,"DRIVING_HOME"))
+            elif loc == 3:
+                schedule_time += self.commute_duration
+                self.schedule.append((schedule_time,"HOME"))
+                
+            loc = (loc + 1) % 4
             
         self.next_state_change = self.schedule[1][0]                                # Assume leaving home is first action
         
