@@ -134,13 +134,22 @@ def update_GLD_EVs_with_Loads(model, helics_config_DSO_EV, include_helics = Fals
 if __name__ == "__main__":
     
     include_helics = True
+    feeder_name = 'R4_12_47_1'
     
     basedir = os.getcwd() + '\\' + 'distribution_simulation' + '\\'
-    dir_for_glm = basedir + "Substation_2.glm"
+    dir_for_glm = basedir + 'Substation_' + feeder_name+ '.glm'
+    
     
     glm_lines = glmanip.read(dir_for_glm,"",buf=[])
     [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
-    del model['evcharger_det']['meter_bldg_28_ev']
+    
+    comm_ev_list = []
+    EV_dict = copy.deepcopy(model['evcharger_det'])
+    for ev_id in EV_dict:
+        if 'meter' in ev_id:
+            comm_ev_list.append(ev_id)
+            del model['evcharger_det'][ev_id]
+    print('DSO: Found {} commercial EVs - Deleting them for now ..'.format(len(comm_ev_list)))
     
     
     fed_name = 'DSO_EV_sim'

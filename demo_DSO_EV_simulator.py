@@ -116,13 +116,13 @@ if __name__ == "__main__":
     
 
     include_gld = True
-    include_wrapper = True
-    include_helics = True
+    include_wrapper = False
+    include_helics = False
     
     curr_dir = os.getcwd()
     
     start_date = '2021-08-05 00:00:00' 
-    end_date = '2021-08-05 05:00:00'
+    end_date = '2021-08-07 00:00:00'
     
     feeder_name = 'R4_12_47_1'
     broker_port = 50000
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     work_chargers_count = 0
     EV_Manager = ev_func.intialize_EV_Manager(EV_Chargers, work_chargers_count)
     
-    
+    # exit
     ###########################################################################
     ########## Adding HELICS configurations for the DSO-EV simulator ##########
     fed_name = 'DSO_EV_sim'
@@ -234,7 +234,7 @@ if __name__ == "__main__":
 
     ##### Getting Load Profiles from input Matpower data #####        
     if include_gld:
-        gld_demand_file = basedir + 'Substation_' + feeder_name+ '_demand.csv'
+        gld_demand_file = basedir + 'Substation_' + feeder_name + '_demand.csv'
         gld_demand_profile = get_load_profiles_from_gld(gld_demand_file, pf_interval, start_date, end_date)
         gld_KW_cosim_bus = gld_demand_profile['distribution_load_real']/1e6
         gld_KVAR_cosim_bus = gld_demand_profile['distribution_load_reac']/1e6
@@ -610,25 +610,29 @@ if __name__ == "__main__":
         if time_granted >= tnext_physics_powerflow_adjust and time_granted < duration:
             print('DSO: Current Physics Power Flow Adjust Interval - {}'.format(time_granted))  
             EV_Charger_avg_total = 0
-            if include_gld and include_helics: 
+            if include_gld: 
+                # Calculate avg charge rate over last sim interval
                 for C in EV_Chargers:
-                    pub_key = fed_name + "/" + C.name
-                    pub_obj = h.helicsFederateGetPublication(fed, pub_key)
-                    # Calculate avg charge rate over last sim interval
                     Charge_avg = ev_func.average_load_interval(C.load_log, time_granted, t_physics_powerflow_interval)
-                    h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
                     EV_Charger_avg_total += Charge_avg
+                    # print("Here", str(EV_Charger_avg_total))
+                    if include_helics:
+                        pub_key = fed_name + "/" + C.name
+                        pub_obj = h.helicsFederateGetPublication(fed, pub_key)
+                        h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
+
                 # Iterate through work chargers
                 for C in EV_Manager.chargers:
-                    pub_key = fed_name + "/" + C.name
-                    pub_obj = h.helicsFederateGetPublication(fed, pub_key)
                     Charge_avg = ev_func.average_load_interval(C.load_log, time_granted, t_physics_powerflow_interval)
-                    h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
+                    if include_helics:
+                        pub_key = fed_name + "/" + C.name
+                        pub_obj = h.helicsFederateGetPublication(fed, pub_key)
+                        h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
             
             EV_Charge_log.append(EV_Charger_avg_total/1000)
             EV_Charge_log_time.append(time_granted/3600)
             
-            if wrapper_config['include_physics_powerflow'] and include_helics:
+            if include_wrapper and wrapper_config['include_physics_powerflow'] and include_helics:
                 sub_key = [key for key in sub_keys  if ('pcc.' + str(cosim_bus) + '.pnv') in key ]
                 sub_object = h.helicsFederateGetInputByTarget(fed, sub_key[0])
                 voltage = h.helicsInputGetComplex(sub_object)

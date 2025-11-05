@@ -83,6 +83,7 @@ def simulate_EVs(Chargers, M, sim_time, current_interval, sim_end):
     
     next_EV_update_time = sim_end
     if current_interval > 0:
+        print('Simulating EVs .....')
         for C in Chargers:
             A = C.current_vehicle
             # Update vehicle for previous interval
@@ -100,6 +101,8 @@ def simulate_EVs(Chargers, M, sim_time, current_interval, sim_end):
                 A.current_time += current_interval
                 C.current_time = A.current_time
                 C.update_load()
+            
+            # print(C.load_log)
             # Check for loaction change
             for x in A.schedule:
                 if x[0] == sim_time:
