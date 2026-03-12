@@ -164,7 +164,7 @@ interval = 60
 sim_interval = 300
 prev_sim_time = 0
 sim_time = 0
-sim_end = int(86400*2)
+sim_end = int(86400*1)
 work_chargers_count = 0
 vehicle_c_rating = 2.5
 include_helics = False
@@ -184,9 +184,9 @@ Charge_log_time = []
 #C = Charger()
 Chargers = []
 
-dir_for_glm = "Substation_2.glm"
+dir_for_glm = 'C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2.glm'
 
-# feeder_name = 'R2_12_47_3' # "Substation 2"
+feeder_name = 'R2_12_47_3' # "Substation 2" #
 feeder_name = 'R4_12_47_1'
 basedir = os.getcwd() + '\\' + 'distribution_simulation' + '\\'
 dir_for_glm = basedir + 'Substation_' + feeder_name+ '.glm'
@@ -411,8 +411,16 @@ plt.plot(EV_output_time,EV_output_load)
 
 labels = ['Combined','Work Chargers','Home Chargers','GLD']
 plt.legend(labels)
+
+# labels = ['Python load','Gridlab-D Load']
+# plt.axhline(y=max(plot_load),color='green',linestyle='--',linewidth=1,label='Maximum Residentail Load')
+# plt.axhline(y=max(plot_load_m),color='orange',linestyle='--',linewidth=1,label='Maximum Commercail Load')
+# labels = ['Combined','Work Chargers','Home Chargers',"Maximum Residential Load \n({:.1f} kW)".format(max(plot_load)),"Maximum Commercial Load \n({:.1f} kW)".format(max(plot_load_m))]
+
+plt.legend(labels,loc='upper right')
 plt.xlabel("Time (hour)")
 plt.ylabel("Agregated Load (Kw)")
+# plt.ylim(-25,775)
 plt.grid()
 plt.show()
 

@@ -7,7 +7,7 @@ class Manager:
         
         self.current_time = 0
         self.load = 0
-        self.chargers = []         # Change back to empty lists when done
+        self.chargers = []
         self.vehicles = []
         self.to_charge = []
         self.load_log = [(0.0,0.0)]

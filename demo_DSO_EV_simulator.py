@@ -116,8 +116,13 @@ if __name__ == "__main__":
     
 
     include_gld = True
-    include_wrapper = False
-    include_helics = False
+    include_wrapper = True
+    include_helics = True
+    
+    flag_TOU = True
+    TOU_participation = 0.75
+    TOU_start = 3600*17     # start 5:00pm
+    TOU_end = 3600*22       # end 10:00pm
     
     curr_dir = os.getcwd()
     
@@ -133,6 +138,7 @@ if __name__ == "__main__":
     ################## Reading Wrapper Configuration Json File ################
     if include_wrapper: 
         wrapper_config_path = '../MATPOWER-wrapper/src/'
+        wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
         wrapper_config_filename = wrapper_config_path + 'wrapper_config_v2.json'
         with open(wrapper_config_filename, 'r') as f:
             wrapper_config = json.loads(f.read())
@@ -556,6 +562,21 @@ if __name__ == "__main__":
         if time_granted >= tnext_EV_sim and time_granted < duration:
              print('DSO: Current EV simulation Interval - {}'.format(time_granted))  
              ev_sim_interval = tnext_EV_sim - last_EV_sim_time
+             
+             # Check for Time Of Use Disincentive
+             if flag_TOU and (TOU_start <= (round(time_granted)%86400) <= TOU_end):
+                 TOU_count = 0
+                 for C in EV_Chargers:
+                     TOU_count += 1
+                     if TOU_count > round(TOU_participation*len(EV_Chargers)):
+                         break
+                     if C.occupied:
+                         C.remove_vehicle()
+             else:
+                 for C in EV_Chargers:
+                     if (not C.occupied) and C.current_vehicle.location == 'HOME':
+                         C.add_vehicle(C.current_vehicle)
+                         
              EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
              EV_queue_time.append(time_granted)
              EV_queue_length.append(len(EV_Manager.to_charge))
@@ -660,41 +681,43 @@ if __name__ == "__main__":
         h.helicsFederateDisconnect(fed)
         # h.helicsBrokerWaitForDisconnect(broker,-1)
         h.helicsBrokerDisconnect(broker)
-        h.helicsCloseLibrary();
+        h.helicsCloseLibrary()
         
     
     #%%############################ Plotting ########################################
-    plot_time, plot_load = ev_func.agregate_loads(EV_Chargers, int(duration), t_EV_sim_interval)
-    plot_time = np.array(plot_time)
-    plot_time = plot_time / 3600
-    plot_load = np.array(plot_load) / 1000
-
-    plot_time_m = []
-    plot_load_m = []
-    for X in EV_Manager.load_log:
-        plot_time_m.append(X[0])
-        plot_load_m.append(X[1])
-        
-    plot_time_m = np.array(plot_time_m) / 3600
-    plot_load_m = np.array(plot_load_m) / 1000
-
-    plot_time_combined, plot_load_combined = ev_func.combine_loads(plot_time,plot_load,plot_time_m,plot_load_m)
+    Aggregate = False
+    if Aggregate:
+        plot_time, plot_load = ev_func.agregate_loads(EV_Chargers, int(duration), t_EV_sim_interval)
+        plot_time = np.array(plot_time)
+        plot_time = plot_time / 3600
+        plot_load = np.array(plot_load) / 1000
     
-    fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    ax1.plot(np.array(plot_time_combined),np.array(plot_load_combined), '-', label = 'All EVs Combined')
-    ax1.plot(plot_time_m,plot_load_m, '-.', label = 'Work EV Chargers')  
-    ax1.plot(plot_time,plot_load, '-.', label = 'Home EV Chargers')
-
-    # EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
-    # EV_output_time = EV_output_time/3600
-    # EV_output_load = EV_output_load/1000
-    # plt.plot(EV_output_time,EV_output_load)
-
-    ax1.legend(loc = 'best')
-    ax1.set_xlabel("Time (hour)")
-    ax1.set_ylabel("Agregated Load (Kw)")
-    ax1.grid()
-    fig1.show()
+        plot_time_m = []
+        plot_load_m = []
+        for X in EV_Manager.load_log:
+            plot_time_m.append(X[0])
+            plot_load_m.append(X[1])
+            
+        plot_time_m = np.array(plot_time_m) / 3600
+        plot_load_m = np.array(plot_load_m) / 1000
+    
+        plot_time_combined, plot_load_combined = ev_func.combine_loads(plot_time,plot_load,plot_time_m,plot_load_m)
+        
+        fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+        ax1.plot(np.array(plot_time_combined),np.array(plot_load_combined), '-', label = 'All EVs Combined')
+        ax1.plot(plot_time_m,plot_load_m, '-.', label = 'Work EV Chargers')  
+        ax1.plot(plot_time,plot_load, '-.', label = 'Home EV Chargers')
+    
+        # EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
+        # EV_output_time = EV_output_time/3600
+        # EV_output_load = EV_output_load/1000
+        # plt.plot(EV_output_time,EV_output_load)
+    
+        ax1.legend(loc = 'best')
+        ax1.set_xlabel("Time (hour)")
+        ax1.set_ylabel("Agregated Load (Kw)")
+        ax1.grid()
+        fig1.show()
 
 
     fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)

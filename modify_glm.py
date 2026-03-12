@@ -21,11 +21,6 @@ glm_lines = glmanip.read(dir_for_glm,"",buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
 ################## Read in Vehicles #######################
-# file = open("C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2_glm_dict.json")
-# file = open("E:/Working_dir_Jacob/EV_dict/Substation_2_glm_dict.json")
-# EV_dict_raw = json.load(file)
-# EV_dict = EV_dict_raw['ev']
-
 EV_dict = model['evcharger_det']
 
 helics_config_py = {}

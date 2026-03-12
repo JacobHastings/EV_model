@@ -33,7 +33,7 @@ def output_from_gridlabd():
     raw_data_house = pd.read_csv(filename, skiprows=8, sep=',')
     clean_timestamp(raw_data_house)
     
-    time = raw_data_house['# timestamp']
+    time = raw_data_charger1['# timestamp']
     house_load = raw_data_house['total_load']
     EV1_SOC = raw_data_charger1[' battery_SOC']
     EV1_charging = raw_data_charger1[' actual_charge_rate']
@@ -43,8 +43,11 @@ def output_from_gridlabd():
     combined_charging = combined_charging
     
     # Convert timestamps into seconds since start of simulation
-    plot_time = (np.array(time)).astype(int) / 10**9    #default is nanoseconds
+    # plot_time = (np.array(time)).astype(int) / 10**9    #default is nanoseconds
+    # plot_time = plot_time - plot_time[0]
+    plot_time = (np.array(time)).astype(float) / 10**9   #default is nanoseconds
     plot_time = plot_time - plot_time[0]
+    plot_time = plot_time.astype(int)
     
     plot_charge = np.array(combined_charging)
     plot_house = np.array(house_load) * 1000
@@ -91,6 +94,21 @@ def numerical_integration(X,Y):
     for i in range(len(X)-1):
         result += ((Y[i]+Y[i+1])/2)*((X[i+1]-X[i]))
     return result
+
+def difference_loads(time1,time2,load1,load2,sim_end,interval):
+    plot_time = list(range(0,sim_end,interval))
+    plot_load = [0.0] * len(plot_time)
+    for j in range(len(plot_time)):
+        for i in range(len(time1)):
+            if time1[i] >= plot_time[j]:
+                plot_load[j]+=load1[i]
+                break
+        for i in range(len(time2)):
+            if time2[i] >= plot_time[j]:
+                plot_load[j]-=load2[i]
+                break
+    
+    return plot_time, plot_load
         
 ##############################################################################
 #################################### Main ####################################
@@ -125,7 +143,12 @@ Chargers = []
 plot_time_d, plot_charge_d = output_from_gridlabd_v2()
 
 basedir = ""
+<<<<<<< Updated upstream
 dir_for_glm ="E:/Working_dir_Jacob/EV_dict/Substation_2.glm"
+=======
+dir_for_glm ='test.glm'
+# dir_for_glm = 'C:/Users/jacob/Documents/MatpowerWrapper/EVtest/EV_dict/Substation_2.glm'
+>>>>>>> Stashed changes
 glm_lines = glmanip.read(dir_for_glm,basedir,buf=[])
 [model,clock,directives,modules,classes] = glmanip.parse(glm_lines)
 
@@ -305,6 +328,7 @@ plot_load = np.array(plot_load)
 
 
 # #plot_diff = plot_charge_d - plot_load
+<<<<<<< Updated upstream
     
 plt.plot(plot_time/3600,plot_load/1000)
 plt.plot(plot_time_d/3600,plot_charge_d/1000)
@@ -313,8 +337,22 @@ plt.legend(labels,loc='upper right')
 plt.xlabel("Time (hour)")
 plt.ylabel("Combined Charging Rate (kW)")
 plt.grid()
+=======
+time_diff, load_diff = difference_loads(plot_time,plot_time_d,plot_load,plot_charge_d,sim_end,interval)
+
+plt.plot(plot_time,plot_load)
+plt.plot(plot_time_d,plot_charge_d)
+labels = ['Python load','Gridlab-D Load']
+plt.legend(labels)
+plt.xlabel("Time (sec)")
+plt.ylabel("Combined Charging Rate (Watts)")
+>>>>>>> Stashed changes
 plt.show()
 
+plt.plot(time_diff,load_diff)
+plt.xlabel("Time (sec)")
+plt.ylabel("Python - Gridlab-d Loads (Watts)")
+plt.show()
 
 energy_input = numerical_integration(plot_time, plot_load)
 energy_input = (energy_input / 3600) / 1000                             # W*s -> kW * h

@@ -1,4 +1,4 @@
-import math
+# import math #used in old scheduler only
 
 class Vehicle:
     
@@ -74,7 +74,7 @@ class Vehicle:
             self.schedule.append((schedule_time,"HOME"))
             loc = 0
             
-        # Outdated Scheduler
+        # Outdated Scheduler (Does not work for individuals working/driving past midnight)
         # days = math.ceil(sim_end/86400)                                             # Determine how many days to schedule
         # while day < days:
         #     schedule_time = 86400*day                                               # Start at 0:00 for that day

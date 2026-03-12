@@ -132,6 +132,8 @@ def simulate_EVs(Chargers, M, sim_time, current_interval, sim_end):
                             for WC in M.chargers:
                                 if ((WC.occupied) and (WC.current_vehicle == A)):
                                     WC.remove_vehicle()
+            C.current_vehicle.current_time = sim_time
+            C.current_time = sim_time
             next_EV_update_time = min(next_EV_update_time, C.current_vehicle.next_state_change)
         # work charger
         M.current_time = sim_time
@@ -177,6 +179,10 @@ def average_load_interval(load_log, sim_time, sim_interval):
 
 
 def agregate_loads(Chargers,sim_end,interval):
+    outputs = True
+    if outputs:
+        print('Aggregating Loads...')
+        day = 1
     plot_time = list(range(0,sim_end,interval))
     plot_load = [0.0] * len(plot_time)
     for j in range(len(plot_time)):
@@ -185,6 +191,10 @@ def agregate_loads(Chargers,sim_end,interval):
                 if C.load_log[i][0] >= plot_time[j]:
                     plot_load[j] += C.load_log[i][1]
                     break
+        if outputs:
+            if plot_time[j] == ((day*86400) - interval):
+                print(f"Day {day} complete...")
+                day += 1
     return plot_time, plot_load
 
 
