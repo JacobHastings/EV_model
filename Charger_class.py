@@ -16,6 +16,7 @@ class Charger:
         self.load_log = [(0.0,0.0)]
         self.name = 'NONE'
         self.DC = False
+        self.DC_charge_setting = 0
         
         
     def add_vehicle(self,EV):
@@ -202,7 +203,62 @@ class Charger:
         p = p2 - ((p2 - p1)*((soc2 - self.current_vehicle.battery_SOC)/(soc2 - soc1)))
         
         self.current_charging_rate = p * 1000 * self.current_vehicle.battery_size
-            
+        
+    def convert_DC_rate(self,rate):
+        charging_curves = [[[]]]
+        # NMC
+        charging_curves[0][0] = [(0,0),(100,0)]
+        charging_curves[0].extend([[(0,0.917),(4,1.048),(10,1.095),(88,1.25),(93,0.595),(100,0.06)]])
+        charging_curves[0].extend([[(0,1.75),(3,2),(10,2.143),(78.5,2.417),(93,0.595),(100,0.06)]])
+        charging_curves[0].extend([[(0,2.798),(3,3.167),(10,3.393),(67,3.75),(93,0.595),(100,0.06)]])
+        # LTO
+        charging_curves.append([[(0,0),(100,0)]])
+        charging_curves[1].extend([[(0,0.798),(2,0.822),(50,0.966),(64,1.008),(80,1.04),(90,1.071),(96,1.134),(100,0.057)]])
+        charging_curves[1].extend([[(0,1.765),(2,1.828),(50,1.975),(60,2.038),(80,2.122),(91,2.227),(100,0.057)]])
+        charging_curves[1].extend([[(0,2.647),(2,2.794),(50,2.983),(60,3.109),(80,3.256),(88,3.361),(100,0.085)]])
+        charging_curves[1].extend([[(0,3.655),(3,3.782),(50,4.055),(60,4.202),(80,4.391),(86,4.517),(100,0.113)]])
+        charging_curves[1].extend([[(0,4.622),(4,4.832),(50,5.168),(60,5.357),(84,5.630),(100,0.063)]])
+        # LMO
+        charging_curves.append([[(0,0),(100,0)]])
+        charging_curves[2].extend([[(0,0.898),(4.4,1.056),(11.3,1.154),(32.4,1.215),(76.1,1.274),(100,0.064)]])
+        charging_curves[2].extend([[(0,1.742),(4,2.044),(12,2.249),(55,2.418),(75,1.19),(100,0.064)]])
+        charging_curves[2].extend([[(0,2.667),(6,3.246),(11.9,3.436),(37.6,3.628),(70,1.44),(100,0.064)]])
+        
+        # Convert to W and Wh for P calculation
+        P = rate/(self.current_vehicle.battery_size * 1000)
+        P_curve = []
+        
+        for i in range(len(charging_curves[self.current_vehicle.battery_type])):
+            if i==0:
+                P_curve.append(0)
+            else:
+                for j in range(len(charging_curves[self.current_vehicle.battery_type][i])-1):
+                    soc1 = charging_curves[self.current_vehicle.battery_type][i][j][0]
+                    soc2 = charging_curves[self.current_vehicle.battery_type][i][j+1][0]
+                    if (soc1 <= self.current_vehicle.battery_SOC) and (soc2 >= self.current_vehicle.battery_SOC):
+                        break
+                x1 = charging_curves[self.current_vehicle.battery_type][i][j][0]
+                x2 = charging_curves[self.current_vehicle.battery_type][i][j+1][0]
+                y1 = charging_curves[self.current_vehicle.battery_type][i][j][1]
+                y2 = charging_curves[self.current_vehicle.battery_type][i][j+1][1]
+                
+                P_temp = (((self.current_vehicle.battery_SOC - x1)/(x2-x1)) * (y2-y1)) + y1
+                P_curve.append(P_temp)
+        
+        if P <= P_curve[len(P_curve)-1]:    
+            for i in range(len(P_curve)-1):
+                p1 = P_curve[i]
+                p2 = P_curve[i+1]
+                c1 = i
+                c2 = i+1
+                if (p1 <= P) and (p2 >= P):
+                    break
+            P_calculated = (((P - p1)/(p2 - p1)) * (c2 - c1)) + c1
+        # Default to maximum P
+        else:
+            P_calculated = P_curve[len(P_curve)-1]
+        
+        return P_calculated * self.current_vehicle.battery_size * 1000
         
     def info(self):
         help_string = "------ Charger class variables -----\n"

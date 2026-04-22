@@ -3,16 +3,20 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from Vehicle_class import Vehicle
+from Charger_class import Charger
+from Manager_class import Manager
 import json
 
 interval = 3600
 sim_end = 86400*1
 T = int(sim_end/interval)
 flag_maintain_SOC = True
-maintain_constraints = []
+maintain_constraints_idx = []
+
+M = Manager()
 
 Vehicles = []
-vehicle_count = 100 
+vehicle_count = 100
 start_SOC = 50 * np.ones(vehicle_count)
 
 for i in range(vehicle_count):
@@ -33,6 +37,9 @@ for i in range(vehicle_count):
     V.update_capacity()
     V.update_log()
     Vehicles.append(V)
+
+M.vehicles = Vehicles
+M.initialize_chargers_from_vehicles()
 
 LMP_test = 20 * np.ones(T)
 for i in range(T):
@@ -149,7 +156,7 @@ for V in Vehicles:
     
     if flag_maintain_SOC:
         constraints += [SOC[T-1,V.index] >= SOC_start[V.index]]
-        maintain_constraints.append(len(constraints)-1) 
+        maintain_constraints_idx.append(len(constraints)-1) 
         
 
 A1 = cp.Parameter(nonneg=True)      # Price
@@ -262,7 +269,7 @@ plt.show()
 ##############################################################################
 extra_energy_margin = 1.0      # >1 for allowable issues; =1 for exact margins
 P_buffer = 2
-bid_slope = 0.00035
+bid_slope = 0.0000035 * vehicle_count
 
 bids = []
 
@@ -387,8 +394,10 @@ bids_out['P_bid'] = bids_out['P_bid'].tolist()
 bids_out['constant_MVAR'] = bids_out['constant_MVAR'].tolist()
 bids_out['constant_MW'] = bids_out['constant_MW'].tolist()
 
-with open('bid_dump.json','w') as json_file_out:
-    json.dump(bids_out,json_file_out, indent=4)
+M.bids_DAM = bids_out
+
+# with open('bid_dump.json','w') as json_file_out:
+#     json.dump(bids_out,json_file_out, indent=4)
 
 ##############################################################################
 #               Match Cleared Quantities to Final Schedule                   #
@@ -408,8 +417,8 @@ Cleared_charge_schedule_fleet.value = altered_schedule_fleet
 
 cleared_constraints = constraints.copy()
 # Remove requirement to end at same SOC as start
-for index in range(len(maintain_constraints)-1,-1,-1):
-    del cleared_constraints[maintain_constraints[index]]
+for index in range(len(maintain_constraints_idx)-1,-1,-1):
+    del cleared_constraints[maintain_constraints_idx[index]]
 # Add cleared quantity schedule constraints
 cleared_constraints += [Cleared_charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
 
@@ -439,14 +448,14 @@ cleared_objective = cp.Minimize(
 
 cleared_prob = cp.Problem(cleared_objective,cleared_constraints)
 
-# Can't use GUROBI "...do not support the cones output by the problem (PSD, NonNeg)..."
 cleared_prob.solve(solver=cp.GUROBI)
-# cleared_prob.solve()
 
 print("status:", cleared_prob.status)
 print("optimal value", cleared_prob.value)
 
 final_schedule = Charge_schedule.value
+
+M.charge_schedule = final_schedule
 
 print("Maximum deviation from cleared values:",(max(abs(Charge_schedule_fleet.value-Cleared_charge_schedule_fleet.value))),"Watts")
 
@@ -468,13 +477,43 @@ plt.ylabel("Final Vehicle Schedules (Watts)")
 plt.grid()
 plt.show()
 
+# plt.plot(plot_time,planned_schedule_fleet)
+# plt.plot(plot_time,planned_schedule_fleet+(1000*np.sum(high_energy_used.value,axis=1)))
+# plt.plot(plot_time,planned_schedule_fleet-(1000*np.sum(low_energy_used.value,axis=1)))
+# plt.plot(plot_time,Charge_schedule_fleet.value)
+# plt.xlabel("Time (hour)")
+# plt.ylabel("Fleet Schedule (Watts)")
+# legend = ['Planned','High Margin','Low Margin','Final Cleared']
+# plt.legend(legend)
+# plt.grid()
+# plt.show()
+
+managed_time = 0
+while managed_time < 86400:
+    M.simulate_scheduled_DAM(300)
+    managed_time += 300
+
+plot_m_time = []
+plot_m_load = []
+for i in range(len(M.load_log)):
+    plot_m_time.append(M.load_log[i][0]/3600)
+    plot_m_load.append(M.load_log[i][1])
+
+# plt.plot(plot_m_time,plot_m_load)
+# plt.xlabel("Time (hour)")
+# plt.ylabel("Managed Charging load (Watts)")
+# plt.grid()
+# plt.show()
+
 plt.plot(plot_time,planned_schedule_fleet)
 plt.plot(plot_time,planned_schedule_fleet+(1000*np.sum(high_energy_used.value,axis=1)))
 plt.plot(plot_time,planned_schedule_fleet-(1000*np.sum(low_energy_used.value,axis=1)))
 plt.plot(plot_time,Charge_schedule_fleet.value)
+plt.plot(plot_m_time,plot_m_load)
 plt.xlabel("Time (hour)")
 plt.ylabel("Fleet Schedule (Watts)")
-legend = ['Planned','High Margin','Low Margin','Final Cleared']
+legend = ['Planned','High Margin','Low Margin','Final Cleared','Managed Charging']
 plt.legend(legend)
 plt.grid()
 plt.show()
+
