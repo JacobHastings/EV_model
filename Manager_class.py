@@ -154,8 +154,14 @@ class Manager:
         SOC_min = cp.Parameter(nonneg=True)
         SOC_min.value = 0
         SOC_start = cp.Parameter(vehicle_count,nonneg=True)
+        SOC_goal_P = cp.Parameter(vehicle_count,nonneg=True)
+        
+        SOC_goal = []
         for i in range(vehicle_count):
-            start_SOC[i] = self.vehicles[i].SOC_log[0][1]
+            # start_SOC[i] = self.vehicles[i].SOC_log[0][1]
+            SOC_goal.append(self.vehicles[i].SOC_log[0][1])
+            
+        SOC_goal_P.value = SOC_goal
         SOC_start.value = start_SOC
 
         Charge_schedule = cp.Variable((T,vehicle_count))
@@ -238,7 +244,7 @@ class Manager:
             constraints += [SOC[:,V.index] <= SOC_max, SOC[:,V.index] >= SOC_min]
             
             if flag_maintain_SOC:
-                constraints += [SOC[T-1,V.index] >= SOC_start[V.index]]
+                constraints += [SOC[T-1,V.index] >= SOC_goal_P[V.index]]
                 maintain_constraints_idx.append(len(constraints)-1) 
                 
 
@@ -546,6 +552,7 @@ class Manager:
             constraints += [SOC[:,V.index] == ((A @ ((Charge_schedule[:,V.index]*hours_per_interval*V.charging_efficiency*SOC_per_watt_hr)+driving_loss[:,V.index]))+SOC_start[V.index])]
             constraints += [SOC[:,V.index] <= SOC_max, SOC[:,V.index] >= SOC_min]
             
+            # Not used in this stage of optimization
             if flag_maintain_SOC:
                 constraints += [SOC[T-1,V.index] >= SOC_start[V.index]]
                 self.maintain_constraints_idx.append(len(constraints)-1) 

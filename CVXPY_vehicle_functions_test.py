@@ -8,8 +8,9 @@ from Manager_class import Manager
 import json
 
 interval = 3600
-sim_end = 86400*1
-T = int(sim_end/interval)
+sim_days = 5
+sim_end = 86400*sim_days
+T = 24
 flag_maintain_SOC = True
 maintain_constraints_idx = []
 
@@ -110,17 +111,29 @@ plt.legend(legend)
 plt.grid()
 plt.show()
 
-# Subsequent Day test - passed
-# M.initial_optimization()
+# Subsequent Day test
+current_day = 1
+Vehicle1_SOC = []
+Vehicle1_SOC.append(M.vehicles[1].battery_SOC)
 
-# planned_schedule_fleet2 = M.charge_schedule_fleet.copy()
+current_day += 1
+while current_day <= sim_days:
+    M.initial_optimization()
+    
+    planned_schedule_fleet2 = M.charge_schedule_fleet.copy()
+    
+    for i in range(T):
+        altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
+    M.charge_schedule_fleet = altered_schedule_fleet
+    
+    M.final_optimization()
+    
+    while managed_time < (86400*(current_day)):
+        M.simulate_scheduled_DAM(300)
+        managed_time += 300
+    
+    Vehicle1_SOC.append(M.vehicles[1].battery_SOC)
+    current_day += 1
 
-# for i in range(T):
-#     altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
-# M.charge_schedule_fleet = altered_schedule_fleet
-
-# M.final_optimization()
-
-# while managed_time < (86400*2):
-#     M.simulate_scheduled_DAM(300)
-#     managed_time += 300
+if sim_days > 1:
+    print("Vehicle 1 end of day SOCs:",Vehicle1_SOC)
