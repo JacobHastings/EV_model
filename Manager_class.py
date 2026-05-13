@@ -58,6 +58,7 @@ class Manager:
         if len(self.chargers) == 0:
             for i in range(len(self.vehicles)):
                 C = Charger()
+                C.name = self.vehicles[i].name
                 C.maximum_load = self.vehicles[i].maximum_charge_rate
                 C.DC = True
                 C.add_vehicle(self.vehicles[i])

@@ -14,7 +14,7 @@ class Vehicle:
         self.charging_efficiency = 0.9
         self.index = -1             # -1 for unassigned
         self.battery_type = 0       # 0 = NMC, 1 = LTO, 2 = LMO
-        
+        self.name = 'EV'
         self.current_time = 0
         self.commute_duration = 1800
         self.commute_distance = 15.0

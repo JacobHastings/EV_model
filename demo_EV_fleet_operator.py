@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue May 12 13:35:45 2026
+
+@author: Monish Mukherjee (monish.mukherjee@pnnl.gov)
+Pacific Northwest National Laboratory
+"""
+
 import math
 import json
 import csv
@@ -11,7 +19,10 @@ import copy
 import glmanip
 import dso_ev_functions as ev_func
 import matplotlib.pyplot as plt
-
+from Vehicle_class import Vehicle
+from Charger_class import Charger
+from Manager_class import Manager
+import random
 
 def create_broker(simulators, port):
     initstring = "--federates=" + str(simulators) + " --port=" + str(port)
@@ -115,11 +126,11 @@ if __name__ == "__main__":
     # json_path = '../src/wrapper_config_test.json'
     
 
-    include_gld = False
+    include_gld = True
     include_wrapper = True
     include_helics = True
     
-    flag_TOU = True
+    flag_TOU = False
     TOU_participation = 0.75
     TOU_start = 3600*17     # start 5:00pm
     TOU_end = 3600*22       # end 10:00pm
@@ -171,6 +182,7 @@ if __name__ == "__main__":
     clock['starttime'] = '\'' + start_date.strftime("%Y-%m-%d %H:%M:%S") + '\''
     clock['stoptime']  = '\'' + end_date.strftime("%Y-%m-%d %H:%M:%S") + '\''
     
+    
     model['metrics_collector_writer'] = {'metrics_collector_1': 
                                          {'interval': '300', 
                                           'interim': '7200', 
@@ -194,12 +206,69 @@ if __name__ == "__main__":
             print(directives[i])
             
     EV_dict = model['evcharger_det']
-    EV_Chargers = ev_func.intialize_EV_gld_info(EV_dict, duration)
+    EV_dict_mod = {}
     
-    work_chargers_count = 0
-    EV_Manager = ev_func.intialize_EV_Manager(EV_Chargers, work_chargers_count)
+    vehicle_count = 100
+    M = Manager()
+    Vehicles = []
+    vehicle_c_rating = 2.5
+    EV_index = 0
+    for ev_name, ev_info in EV_dict.items():
+        if EV_index >= vehicle_count:
+            break
+        
+        V = Vehicle()
+        V.name =  ev_name
+        V.index = EV_index
+        EV_index += 1
+        
+        V.set_day_schedule(duration)
+        V.battery_SOC = 50 
+        ev_info['battery_SOC'] = V.battery_SOC
+        V.battery_size = float(ev_info['mileage_classification']) / float(ev_info['mileage_efficiency'])
+        V.update_capacity()
+        V.charging_efficiency = float(ev_info['charging_efficiency'])
+        V.mileage_efficiency = float(ev_info['mileage_efficiency'])
+        V.maximum_charge_rate = V.battery_size * 1000 * vehicle_c_rating   
+        
+        V.work_start = float(ev_info['arrival_at_work'])
+        V.work_duration =  float(ev_info['duration_at_work'])
+        V.commute_distance = float(ev_info['travel_distance'])
+        
+        V.work_start = int(ev_info['arrival_at_work']) // 100
+        V.work_start += (( int(ev_info['arrival_at_work']) % 100 ) / 60)
+        V.work_duration = float(ev_info['duration_at_work']) / 3600
+        
+        home_arrival = int(ev_info['arrival_at_home']) // 100
+        home_arrival += (( int(ev_info['arrival_at_home']) % 100 ) / 60)
+        if home_arrival < V.work_start:
+            home_arrival += 24
+        V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
+        V.commute_distance = float(ev_info['travel_distance']) / 2
+
+        V.update_log()
+        Vehicles.append(V)
+        
+        EV_dict_mod[ev_name] = copy.deepcopy(ev_info)
+
     
-    # exit
+    M.vehicles = Vehicles
+    M.initialize_chargers_from_vehicles()
+    M.last_setting_change = np.zeros(len(M.chargers))
+
+    LMP_test = 20 * np.ones(24)
+    interval = 3600
+    for i in range(24):
+        hour = int(i*interval/3600)
+        if 0 <= (hour%24) < 6:
+            LMP_test[i] = LMP_test[i] * 0.5
+        if 16 <= (hour%24) < 20:
+            LMP_test[i] = LMP_test[i] * 2
+        
+    M.LMP_est = np.array([10., 10., 10., 10., 10., 10., 20., 20., 20., 20., 20., 20., 20.,
+           20., 20., 20., 40., 40., 40., 40., 20., 20., 20., 20.])
+
+
     ###########################################################################
     ########## Adding HELICS configurations for the DSO-EV simulator ##########
     fed_name = 'DSO_EV_sim'
@@ -223,6 +292,7 @@ if __name__ == "__main__":
         
         ######### Reading GLM file and Replacing EVs with Load Objects #######
         if include_gld: 
+            model['evcharger_det'] = copy.deepcopy(EV_dict_mod)
             model, helics_config_DSO_EV, helics_config_gld = glm_mod.update_GLD_EVs_with_Loads(model, helics_config_DSO_EV, include_helics)
             with open(basedir + "helics_config_gld.json", 'w') as fp1:
                 json.dump(helics_config_gld, fp1, indent=4)            
@@ -248,10 +318,12 @@ if __name__ == "__main__":
     if include_wrapper:
         DSO_kW_profiles = get_load_profiles_from_wrapper(wrapper_config_path, wrapper_config, start_date, end_date)
         DSO_KW_cosim_bus = DSO_kW_profiles[cosim_bus]
-        cosim_bus_mul = 4215.427
+        if include_gld:
+            cosim_bus_mul = max(DSO_KW_cosim_bus.values) / max(gld_KW_cosim_bus.values)
+        else:
+            cosim_bus_mul = 4215.427
     
     if include_gld:
-        cosim_bus_mul = max(DSO_KW_cosim_bus.values) / max(gld_KW_cosim_bus.values)
         gld_KW_cosim_bus_scaled = gld_KW_cosim_bus*cosim_bus_mul
         gld_KVAR_cosim_bus_scaled = gld_KVAR_cosim_bus*cosim_bus_mul
     
@@ -266,7 +338,7 @@ if __name__ == "__main__":
     # fig0.show()
         
     # exit
-
+    
     ##### Setting up HELICS Configuration #####
     print('DSO: HELICS Version {}'.format(h.helicsGetVersion()))
     if include_helics :
@@ -305,19 +377,6 @@ if __name__ == "__main__":
         if include_wrapper:
             if wrapper_config['include_storage']:
                 temp_specs = get_storage_specs(wrapper_config)
-                # ecap = [100,100,100]
-                # pcap = [50,50,25]
-                # storage_bus = [2,2,1]
-                # eff = [1,1,1]
-                # ecap_out = list(ecap)
-                # pcap_out = list(pcap)
-                # bus_out = list(storage_bus)
-                # eff_out = list(eff)
-                # storage_specs = dict()
-                # storage_specs['ecap'] = ecap_out
-                # storage_specs['pcap'] = pcap_out
-                # storage_specs['bus'] = bus_out
-                # storage_specs['eff'] = eff_out
                 specs_raw = json.dumps(temp_specs)
                 pub_key = [key for key in pub_keys  if ('pcc.' + 'storage') in key ]
                 pub_object = h.helicsFederateGetPublication(fed, pub_key[0])
@@ -327,19 +386,18 @@ if __name__ == "__main__":
 
     
     
-    
     EV_queue_time = []
     EV_queue_length = []
     EV_Charge_log = []
     EV_Charge_log_time = []
     substation_load_df = pd.DataFrame(columns=['timestamp', 'time_granted', 'substation_load_real', 'substation_load_imag'])
-
+    EV_fleet_DAM_schedule_df = pd.DataFrame(columns=['time', 'planned', 'adjusted'])
     
     ###### Buffer to sending out data before the Operational Cycle  ######
-    buffer = 5
+    buffer = 10
     last_EV_sim_time = 0
     tnext_EV_sim = 0
-    t_EV_sim_interval = 60
+    t_EV_sim_interval = 300
     
     if include_gld: 
         tnext_physics_powerflow = pf_interval-buffer
@@ -386,7 +444,10 @@ if __name__ == "__main__":
             pf_intervals = int(duration/wrapper_config['physics_powerflow']['interval'])
             pf_v_df = pd.DataFrame(columns=['timestamp', 'time_granted', 'V'])  
             pf_index = 0
-        
+     
+    altered_schedule = np.zeros((24,vehicle_count))
+    altered_schedule_fleet = np.zeros(24)
+
     while time_granted < duration-buffer:
 
         ################## Determing next helics time request ##################
@@ -421,42 +482,36 @@ if __name__ == "__main__":
         if include_wrapper: 
             if time_granted >= tnext_day_ahead_market and wrapper_config['include_day_ahead_market'] and time_granted < duration:
                 print('DSO: Current Day Ahead Market Interval - {}'.format(time_granted))  
+                
+                ##### For GLD Simulations: DAM Bids based on previously recorded GLD Data #####
                 DAM_constant_load_KW = np.zeros(len(flexibility_profile))
                 DAM_constant_load_KVAR = np.zeros(len(flexibility_profile))
-                flex_load = np.zeros(len(flexibility_profile))
-                Q_values = np.zeros([len(flexibility_profile),blocks])
-                Q_val_out = [[0]*blocks]*len(flexibility_profile)
-                P_values = np.zeros([len(flexibility_profile),blocks])
-                P_val_out = [[0]*blocks]*len(flexibility_profile)
-                
                 
                 DAM_start = current_time + timedelta(seconds=buffer)
                 DAM_end = DAM_start + timedelta(seconds = wrapper_config['day_ahead_market']['interval'] - 60)
-
+                
                 DAM_profile_KW = DSO_KW_cosim_bus.loc[DAM_start:DAM_end].resample('3600s').mean() 
                 MW_MVAR_factor = case['bus'][cosim_bus-1][2] / case['bus'][cosim_bus-1][3]
                 DAM_profile_KVAR = DAM_profile_KW//MW_MVAR_factor
-                ##### For GLD Simulations: DAM Bids based on previously recorded GLD Data #####
+
                 if include_gld:
                     DAM_profile_KW = gld_KW_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
                     DAM_profile_KVAR = gld_KVAR_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
                 
                 
+                M.initial_optimization()
+                bid =  M.bids_DAM
 
-                for t in range(len(flexibility_profile)):
-                    DAM_constant_load_KW[t] = DAM_profile_KW.iloc[t] * (1-flexibility_profile[t])
-                    DAM_constant_load_KVAR[t] = DAM_profile_KVAR.iloc[t]
-                    flex_load[t] = DAM_profile_KW.iloc[t] * flexibility_profile[t]
-                    Q_values[t] = np.linspace(0,flex_load[t],blocks)
-                    Q_val_out[t] = list(Q_values[t])
-                    P_values[t] = np.linspace(max(P_range), min(P_range),blocks)
-                    P_val_out[t] = list(P_values[t])
-                    
-                bid =  dict()
-                bid['constant_MW'] = list(DAM_constant_load_KW)
-                bid['constant_MVAR'] = list(DAM_constant_load_KVAR)
-                bid['P_bid'] = P_val_out
-                bid['Q_bid'] = Q_val_out
+                ### Write code to  add planned_schedule_fleet data into the planned column of EV_fleet_DAM_schedule_df
+                EV_fleet_schedule_df_temp = pd.DataFrame(columns=['time', 'planned', 'adjusted'])
+                EV_fleet_schedule_df_temp['time'] = list((DAM_profile_KW.index -  start_date).total_seconds())
+                EV_fleet_schedule_df_temp['planned'] = list(M.charge_schedule_fleet.copy())
+
+
+                print("Currently just using the observed Load Forecast")
+                print("*** Update Logic here to demonestrate the impact of DSO-EV handshake Currently ***")
+                bid['constant_MW'] = list(DAM_profile_KW)
+                bid['constant_MVAR'] = list(DAM_profile_KVAR)
                 
                 # print(bid)
                 bid_raw = json.dumps(bid)
@@ -485,11 +540,20 @@ if __name__ == "__main__":
                         allocation_raw = h.helicsInputGetString(sub_object)
                         DAM_allocation =  json.loads(allocation_raw)
                         print('DSO: Received cleared DAM values {} for Bus {}'.format(DAM_allocation, cosim_bus))
-                        
                         for t in range(len(DAM_allocation['P_clear'])):
                             da_bids_df.loc[len(da_bids_df)] = [current_time - timedelta(seconds=buffer) + timedelta(seconds=t*3600), \
                                                                time_granted - buffer + t*3600, DAM_allocation['P_clear'][t], DAM_allocation['Q_clear'][t]]
-                                     
+                        
+                        ##########################################################
+                        print("*** Update Logic here to alter schedule based on cleared quantity ***")
+                        for i in range(len(DAM_allocation['P_clear'])):
+                            altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
+                        M.charge_schedule_fleet = altered_schedule_fleet
+                        M.final_optimization()    
+
+                        EV_fleet_schedule_df_temp['adjusted'] = (altered_schedule_fleet.copy())
+                        EV_fleet_DAM_schedule_df = pd.concat([EV_fleet_DAM_schedule_df, EV_fleet_schedule_df_temp], ignore_index=True)
+                        
                 tnext_day_ahead_market_adjust  = tnext_day_ahead_market_adjust + t_day_ahead_market_interval
         
         
@@ -505,7 +569,7 @@ if __name__ == "__main__":
                 data_idx = DSO_KW_cosim_bus.index[DSO_KW_cosim_bus.index == profile_time]
                 RTM_load_KW = DSO_KW_cosim_bus.loc[data_idx].values[0]
                 MW_MVAR_factor = case['bus'][cosim_bus-1][2] / case['bus'][cosim_bus-1][3]
-                RTM_load_KVAR = DAM_profile_KW//MW_MVAR_factor
+                RTM_load_KVAR = RTM_load_KW//MW_MVAR_factor
                 
                 ##### For GLD Simulations: RTM Bids based on last measured substation demand #####
                 if include_gld and include_helics:
@@ -573,16 +637,14 @@ if __name__ == "__main__":
                      if C.occupied:
                          C.remove_vehicle()
              else:
-                 for C in EV_Chargers:
-                     if (not C.occupied) and C.current_vehicle.location == 'HOME':
-                         C.add_vehicle(C.current_vehicle)
+                 M.simulate_scheduled_DAM(t_EV_sim_interval)
                          
-             EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
-             EV_queue_time.append(time_granted)
-             EV_queue_length.append(len(EV_Manager.to_charge))
+             # EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
+             # EV_queue_time.append(time_granted)
+             # EV_queue_length.append(len(EV_Manager.to_charge))
              
              last_EV_sim_time = copy.deepcopy(time_granted)             
-             tnext_EV_sim = min(tnext_EV_sim + t_EV_sim_interval, next_EV_update_time, duration)
+             tnext_EV_sim = min(tnext_EV_sim + t_EV_sim_interval, duration)
              
 
         
@@ -594,7 +656,6 @@ if __name__ == "__main__":
             if include_gld and include_helics: 
                 for sub_key in sub_keys:
                     if 'distribution_load' in sub_key:
-
                         sub_object = h.helicsFederateGetInputByTarget(fed, sub_key)
                         substation_load = h.helicsInputGetComplex(sub_object)/1e6
                         
@@ -633,17 +694,17 @@ if __name__ == "__main__":
             EV_Charger_avg_total = 0
             if include_gld: 
                 # Calculate avg charge rate over last sim interval
-                for C in EV_Chargers:
-                    Charge_avg = ev_func.average_load_interval(C.load_log, time_granted, t_physics_powerflow_interval)
-                    EV_Charger_avg_total += Charge_avg
-                    # print("Here", str(EV_Charger_avg_total))
-                    if include_helics:
-                        pub_key = fed_name + "/" + C.name
-                        pub_obj = h.helicsFederateGetPublication(fed, pub_key)
-                        h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
+                # for C in M.chargers:
+                #     Charge_avg = ev_func.average_load_interval(C.load_log, time_granted, t_physics_powerflow_interval)
+                #     EV_Charger_avg_total += Charge_avg
+                #     # print("Here", str(EV_Charger_avg_total))
+                #     if include_helics:
+                #         pub_key = fed_name + "/" + C.name
+                #         pub_obj = h.helicsFederateGetPublication(fed, pub_key)
+                #         h.helicsPublicationPublishDouble(pub_obj, Charge_avg)
 
                 # Iterate through work chargers
-                for C in EV_Manager.chargers:
+                for C in M.chargers:
                     Charge_avg = ev_func.average_load_interval(C.load_log, time_granted, t_physics_powerflow_interval)
                     if include_helics:
                         pub_key = fed_name + "/" + C.name
@@ -685,39 +746,20 @@ if __name__ == "__main__":
         
     
     #%%############################ Plotting ########################################
-    Aggregate = False
-    if Aggregate:
-        plot_time, plot_load = ev_func.agregate_loads(EV_Chargers, int(duration), t_EV_sim_interval)
-        plot_time = np.array(plot_time)
-        plot_time = plot_time / 3600
-        plot_load = np.array(plot_load) / 1000
     
-        plot_time_m = []
-        plot_load_m = []
-        for X in EV_Manager.load_log:
-            plot_time_m.append(X[0])
-            plot_load_m.append(X[1])
-            
-        plot_time_m = np.array(plot_time_m) / 3600
-        plot_load_m = np.array(plot_load_m) / 1000
-    
-        plot_time_combined, plot_load_combined = ev_func.combine_loads(plot_time,plot_load,plot_time_m,plot_load_m)
-        
-        fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-        ax1.plot(np.array(plot_time_combined),np.array(plot_load_combined), '-', label = 'All EVs Combined')
-        ax1.plot(plot_time_m,plot_load_m, '-.', label = 'Work EV Chargers')  
-        ax1.plot(plot_time,plot_load, '-.', label = 'Home EV Chargers')
-    
-        # EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
-        # EV_output_time = EV_output_time/3600
-        # EV_output_load = EV_output_load/1000
-        # plt.plot(EV_output_time,EV_output_load)
-    
-        ax1.legend(loc = 'best')
-        ax1.set_xlabel("Time (hour)")
-        ax1.set_ylabel("Agregated Load (Kw)")
-        ax1.grid()
-        fig1.show()
+    manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
+    fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    ax1.plot(np.array(manager_df.time)/3600,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
+    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
+    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
+    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
+    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
+
+    ax1.legend(loc = 'best')
+    ax1.set_xlabel("Time (hour)")
+    ax1.set_ylabel("Net EV Load (Kw)")
+    ax1.grid()
+    fig1.show()
 
 
     fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
@@ -728,25 +770,6 @@ if __name__ == "__main__":
     ax2.grid()
     fig2.show()
     
-    
-    # plt.plot(np.array(queue_time)/3600, queue_length)
-    # plt.xlabel("Time (hour)")
-    # plt.ylabel("Length of Charging Queue")
-    # plt.grid()
-    # plt.show()
 
-    # plt.plot(Charge_log_time,Charge_log)
-    # EV_output_time, EV_output_load = output_from_gridlabd_v2("EV_charger_output.csv")
-    # EV_output_time = EV_output_time/3600
-    # EV_output_load = EV_output_load/1000
-    # plt.plot(EV_output_time,EV_output_load)
-
-    # labels = ['Home Chargers','GLD']
-    # plt.legend(labels)
-    # plt.xlabel("Time (hour)")
-    # plt.ylabel("Agregated Load (Kw)")
-    # plt.grid()
-    # plt.show()
-    
     
     
