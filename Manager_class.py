@@ -21,6 +21,10 @@ class Manager:
         self.high_energy_used = []
         self.last_setting_change = []
         self.LMP_est = []
+        self.obj_price = 1
+        self.obj_SOC = 1
+        self.obj_avg = 1
+        self.obj_diff = 1
         
     def simulate(self, interval):
         # Reset load
@@ -92,9 +96,23 @@ class Manager:
                 load_avg = 0
                 small_interval = 10
                 while interval_time < interval:
+                    if interval - interval_time < small_interval:
+                        small_interval = interval - interval_time
+                    if C.current_vehicle.battery_SOC >= 100:
+                        # Update vehicle information
+                        C.current_vehicle.update_SOC()
+                        C.current_vehicle.current_time += small_interval
+                        C.current_vehicle.update_log()
+                        
+                        # Update charger information
+                        C.current_time = C.current_vehicle.current_time
+                        C.update_load()
+                    else:
+                        if C.occupied == False:
+                            C.add_vehicle(C.current_vehicle)
+                        C.charge(small_interval)
+                        load_avg += C.load
                     
-                    C.charge(small_interval)
-                    load_avg += C.load
                     interval_time += small_interval
                 load_avg = load_avg / (interval/small_interval)
                 self.load += load_avg
@@ -127,7 +145,7 @@ class Manager:
         else:
             self.load_log.append((self.current_time,self.load))
             
-    def initial_optimization(self):
+    def initial_optimization(self, cosim_bus_mul = 4021.74):
         interval = 3600
         sim_end = 86400*1
         T = int(sim_end/interval)
@@ -178,6 +196,7 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
+            # discharge_hour = -1
             for i in range(T):
                 time = i * interval
                 end = time + interval - 1
@@ -208,32 +227,49 @@ class Manager:
                     charge_available.value[i,V.index] = (end - next_time) / interval
                 
                 # Determine driving SOC losses
-                for entry in range(len(V.schedule)-1):
-                    if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end) and i<(T-1):
-                        if V.schedule[entry][0] == time:
-                            driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                        else:
-                            driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                            
-                    # Backup logic if time outside of home becomes too small, edge cases untested
-                    # if (V.schedule[entry][1] == 'DRIVING_HOME') and (V.schedule[entry+1][1] == 'HOME') and ((time+interval) <= V.schedule[entry+1][0] <= (end+interval)):
-                    #     if V.schedule[entry+1][0] == (end+interval) and i<T-1:
-                    #         driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                    #     else:
-                    #         driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                                
-                    if (V.schedule[entry][1] == 'DRIVING_HOME') and (time<=V.schedule[entry][0]<=end):
-                        if i!=0:
-                            if V.schedule[entry+1][0] > end:
-                                driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                # Short work time case (must create a 'clean' discharging hour)
+                if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
+                    for entry in range(len(V.schedule)-1):
+                        # In the hour where leaving occurs: make charging unavailable and apply all driving losses
+                        if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end):
+                            if (V.work_duration*3600) + (V.commute_duration*2) < 3600:
+                                discharge_hour = i
                             else:
-                                driving_loss.value[i-1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                        # Otherwise the loss has already been applied
+                                # 'clean' hour theoretically possible here, include consideration later
+                                discharge_hour = i
+                # Long work time case (a 'clean' hour for discharging exists)
+                else:
+                    for entry in range(len(V.schedule)-1):
+                        if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end) and i<(T-1):
+                            if V.schedule[entry][0] == time:
+                                driving_loss.value[i,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                            else:
+                                driving_loss.value[i+1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                
+                        # Backup logic if time outside of home becomes too small, edge cases untested
+                        # if (V.schedule[entry][1] == 'DRIVING_HOME') and (V.schedule[entry+1][1] == 'HOME') and ((time+interval) <= V.schedule[entry+1][0] <= (end+interval)):
+                        #     if V.schedule[entry+1][0] == (end+interval) and i<T-1:
+                        #         driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                        #     else:
+                        #         driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                    
+                        if (V.schedule[entry][1] == 'DRIVING_HOME') and (time<=V.schedule[entry][0]<=end):
+                            if i!=0:
+                                if V.schedule[entry+1][0] > end:
+                                    driving_loss.value[i,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                else:
+                                    driving_loss.value[i-1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                            # Otherwise the loss has already been applied
                 
                 # Construct lower triangular matrix for running SOC calculation
                 for j in range(T):
                     if j>i:
                         A.value[i,j] = 0
+                        
+            # Short work time case (must create a 'clean' discharging hour)            
+            if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
+                charge_available.value[discharge_hour,V.index] = 0
+                driving_loss.value[discharge_hour,V.index] = -200*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
 
             # Convert charge_available to watts
             constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate]
@@ -250,13 +286,13 @@ class Manager:
                 
 
         A1 = cp.Parameter(nonneg=True)      # Price
-        A1.value = 1    #1
+        A1.value = self.obj_price * 1       #1
         A2 = cp.Parameter(nonneg=True)      # SOC
-        A2.value = 50 #50
+        A2.value = self.obj_SOC * 50        #50
         A3 = cp.Parameter(nonneg=True)      # Smoothing avg
-        A3.value = 100 #100
+        A3.value = self.obj_avg * 100       #100
         A4 = cp.Parameter(nonneg=True)      # Smoothing diff
-        A4.value = 200 #200
+        A4.value = self.obj_diff * 200      #200
         A5 = cp.Parameter(nonneg=True)      # 20-80 rule
         A5.value = 0
 
@@ -416,7 +452,7 @@ class Manager:
         for bid in bids:
             max_bid_len = max(max_bid_len,len(bid))
 
-        cosim_bus_mul = 4021.74
+        # cosim_bus_mul = 4021.74
         bids_out = {}
         bids_out['Q_bid'] = np.zeros((T,max_bid_len))
         bids_out['P_bid'] = np.zeros((T,max_bid_len))
@@ -445,7 +481,7 @@ class Manager:
         sim_end = 86400*1
         T = int(sim_end/interval)
         vehicle_count = len(self.vehicles)
-        flag_maintain_SOC = False
+        flag_maintain_SOC = True
         
         constraints = []
         
@@ -474,8 +510,14 @@ class Manager:
         SOC_min = cp.Parameter(nonneg=True)
         SOC_min.value = 0
         SOC_start = cp.Parameter(vehicle_count,nonneg=True)
+        SOC_goal_P = cp.Parameter(vehicle_count,nonneg=True)
+        
+        SOC_goal = []
         for i in range(vehicle_count):
-            start_SOC[i] = self.vehicles[i].SOC_log[0][1]
+            SOC_goal.append(self.vehicles[i].SOC_log[0][1] * 0.8)
+            SOC_goal[i] = (((self.vehicles[i].commute_distance * 2) / self.vehicles[i].mileage_efficiency) / self.vehicles[i].battery_size) * 100
+            
+        SOC_goal_P.value = SOC_goal
         SOC_start.value = start_SOC
         
         charge_available = cp.Parameter((T,vehicle_count),nonneg=True)
@@ -487,8 +529,9 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
+            # discharge_hour = -1
             for i in range(T):
-                time = i * interval
+                time = i * interval + V.current_time
                 end = time + interval - 1
                 # Reset then determine location at time i
                 location = 'NONE'
@@ -517,32 +560,51 @@ class Manager:
                     charge_available.value[i,V.index] = (end - next_time) / interval
                 
                 # Determine driving SOC losses
-                for entry in range(len(V.schedule)-1):
-                    if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end) and i<(T-1):
-                        if V.schedule[entry][0] == time:
-                            driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                        else:
-                            driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                            
-                    # Backup logic if time outside of home becomes too small, edge cases untested
-                    # if (V.schedule[entry][1] == 'DRIVING_HOME') and (V.schedule[entry+1][1] == 'HOME') and ((time+interval) <= V.schedule[entry+1][0] <= (end+interval)):
-                    #     if V.schedule[entry+1][0] == (end+interval) and i<T-1:
-                    #         driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                    #     else:
-                    #         driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                                
-                    if (V.schedule[entry][1] == 'DRIVING_HOME') and (time<=V.schedule[entry][0]<=end):
-                        if i!=0:
-                            if V.schedule[entry+1][0] > end:
-                                driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                # Short work time case (must create a 'clean' discharging hour)
+                if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
+                    for entry in range(len(V.schedule)-1):
+                        # In the hour where leaving occurs: make charging unavailable and apply all driving losses
+                        if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end):
+                            if (V.work_duration*3600) + (V.commute_duration*2) < 3600:
+                                discharge_hour = i
                             else:
-                                driving_loss.value[i-1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
-                        # Otherwise the loss has already been applied
+                                # 'clean' hour theoretically possible here, include consideration later
+                                discharge_hour = i
+                    # charge_available.value[discharge_hour,V.index] = 0
+                    # driving_loss.value[discharge_hour,V.index] = -200*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                # Long work time case (a 'clean' hour for discharging exists)
+                else:
+                    for entry in range(len(V.schedule)-1):
+                        if (V.schedule[entry][1] == 'DRIVING_WORK') and (time<=V.schedule[entry][0]<=end) and i<(T-1):
+                            if V.schedule[entry][0] == time:
+                                driving_loss.value[i,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                            else:
+                                driving_loss.value[i+1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                
+                        # Backup logic if time outside of home becomes too small, edge cases untested
+                        # if (V.schedule[entry][1] == 'DRIVING_HOME') and (V.schedule[entry+1][1] == 'HOME') and ((time+interval) <= V.schedule[entry+1][0] <= (end+interval)):
+                        #     if V.schedule[entry+1][0] == (end+interval) and i<T-1:
+                        #         driving_loss.value[i+1,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                        #     else:
+                        #         driving_loss.value[i,V.index] = -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                    
+                        if (V.schedule[entry][1] == 'DRIVING_HOME') and (time<=V.schedule[entry][0]<=end):
+                            if i!=0:
+                                if V.schedule[entry+1][0] > end:
+                                    driving_loss.value[i,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                                else:
+                                    driving_loss.value[i-1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
+                            # Otherwise the loss has already been applied
                 
                 # Construct lower triangular matrix for running SOC calculation
                 for j in range(T):
                     if j>i:
                         A.value[i,j] = 0
+                        
+            # Short work time case (must create a 'clean' discharging hour)            
+            if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
+                charge_available.value[discharge_hour,V.index] = 0
+                driving_loss.value[discharge_hour,V.index] = -200*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
                         
             # Convert charge_available to watts
             constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate]
@@ -553,10 +615,12 @@ class Manager:
             constraints += [SOC[:,V.index] == ((A @ ((Charge_schedule[:,V.index]*hours_per_interval*V.charging_efficiency*SOC_per_watt_hr)+driving_loss[:,V.index]))+SOC_start[V.index])]
             constraints += [SOC[:,V.index] <= SOC_max, SOC[:,V.index] >= SOC_min]
             
-            # Not used in this stage of optimization
+            # Don't drop below 80% of starting SOC for simulation
             if flag_maintain_SOC:
-                constraints += [SOC[T-1,V.index] >= SOC_start[V.index]]
-                self.maintain_constraints_idx.append(len(constraints)-1) 
+                constraints += [SOC[T-1,V.index] >= SOC_goal_P[V.index]]
+                # constraints += [SOC[T-1,V.index] >= (SOC_start[V.index] * 0.8)]
+                # constraints += [SOC[T-1,V.index] >= 10]
+                # self.maintain_constraints_idx.append(len(constraints)-1) 
         
         Charge_schedule_fleet = cp.Variable(T)
         constraints += [Charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
@@ -599,6 +663,7 @@ class Manager:
         # cleared_prob = cp.Problem(cleared_objective,cleared_constraints)
         cleared_prob = cp.Problem(cleared_objective,constraints)
 
+        print("Beginning Final Optimization")
         cleared_prob.solve(solver=cp.GUROBI)
 
         print("status:", cleared_prob.status)

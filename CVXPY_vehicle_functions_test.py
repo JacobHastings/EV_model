@@ -50,6 +50,10 @@ for i in range(vehicle_count):
     V.update_log()
     Vehicles.append(V)
 
+# Short work test
+Vehicles[0].work_duration = 1/3600
+Vehicles[0].set_day_schedule(sim_end)
+
 M.vehicles = Vehicles
 M.initialize_chargers_from_vehicles()
 M.last_setting_change = np.zeros(len(M.chargers))
@@ -137,3 +141,4 @@ while current_day <= sim_days:
 
 if sim_days > 1:
     print("Vehicle 1 end of day SOCs:",Vehicle1_SOC)
+    

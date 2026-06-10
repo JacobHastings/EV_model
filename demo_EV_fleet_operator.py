@@ -149,7 +149,7 @@ if __name__ == "__main__":
     ################## Reading Wrapper Configuration Json File ################
     if include_wrapper: 
         wrapper_config_path = '../MATPOWER-wrapper/src/'
-        # wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
+        wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
         wrapper_config_filename = wrapper_config_path + 'wrapper_config_v2.json'
         with open(wrapper_config_filename, 'r') as f:
             wrapper_config = json.loads(f.read())
@@ -223,7 +223,7 @@ if __name__ == "__main__":
         EV_index += 1
         
         V.set_day_schedule(duration)
-        V.battery_SOC = 50 
+        V.battery_SOC = 70 
         ev_info['battery_SOC'] = V.battery_SOC
         V.battery_size = float(ev_info['mileage_classification']) / float(ev_info['mileage_efficiency'])
         V.update_capacity()
@@ -231,13 +231,14 @@ if __name__ == "__main__":
         V.mileage_efficiency = float(ev_info['mileage_efficiency'])
         V.maximum_charge_rate = V.battery_size * 1000 * vehicle_c_rating   
         
-        V.work_start = float(ev_info['arrival_at_work'])
-        V.work_duration =  float(ev_info['duration_at_work'])
-        V.commute_distance = float(ev_info['travel_distance'])
+        # V.work_start = float(ev_info['arrival_at_work'])
+        # V.work_duration =  float(ev_info['duration_at_work'])
+        # V.commute_distance = float(ev_info['travel_distance'])
         
         V.work_start = int(ev_info['arrival_at_work']) // 100
         V.work_start += (( int(ev_info['arrival_at_work']) % 100 ) / 60)
         V.work_duration = float(ev_info['duration_at_work']) / 3600
+        
         
         home_arrival = int(ev_info['arrival_at_home']) // 100
         home_arrival += (( int(ev_info['arrival_at_home']) % 100 ) / 60)
@@ -255,19 +256,15 @@ if __name__ == "__main__":
     M.vehicles = Vehicles
     M.initialize_chargers_from_vehicles()
     M.last_setting_change = np.zeros(len(M.chargers))
-
-    LMP_test = 20 * np.ones(24)
-    interval = 3600
-    for i in range(24):
-        hour = int(i*interval/3600)
-        if 0 <= (hour%24) < 6:
-            LMP_test[i] = LMP_test[i] * 0.5
-        if 16 <= (hour%24) < 20:
-            LMP_test[i] = LMP_test[i] * 2
         
     M.LMP_est = np.array([10., 10., 10., 10., 10., 10., 20., 20., 20., 20., 20., 20., 20.,
            20., 20., 20., 40., 40., 40., 40., 20., 20., 20., 20.])
-
+    
+    M.obj_SOC = 1
+    M.obj_price = 1
+    M.obj_avg = 1
+    M.obj_diff = 1
+    flag_controlled_charging = True
 
     ###########################################################################
     ########## Adding HELICS configurations for the DSO-EV simulator ##########
@@ -499,7 +496,7 @@ if __name__ == "__main__":
                     DAM_profile_KVAR = gld_KVAR_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
                 
                 
-                M.initial_optimization()
+                M.initial_optimization(cosim_bus_mul)
                 bid =  M.bids_DAM
 
                 ### Write code to  add planned_schedule_fleet data into the planned column of EV_fleet_DAM_schedule_df
@@ -533,8 +530,9 @@ if __name__ == "__main__":
             if time_granted >= tnext_day_ahead_market_adjust and wrapper_config['include_day_ahead_market'] and time_granted < duration:
                 print('DSO: Current Day Ahead Market Adjust Interval - {}'.format(time_granted))  
                 ###### Saving the DA Cleared Price: This can be used to schedule EVs #########
-                if include_helics:                    
-                    for cosim_bus in wrapper_config['cosimulation_bus']:
+                            
+                for cosim_bus in wrapper_config['cosimulation_bus']:
+                    if include_helics:        
                         sub_key = [key for key in sub_keys  if ('pcc.' + str(cosim_bus) + '.da_energy.cleared') in key ]
                         sub_object = h.helicsFederateGetInputByTarget(fed, sub_key[0])
                         allocation_raw = h.helicsInputGetString(sub_object)
@@ -543,16 +541,19 @@ if __name__ == "__main__":
                         for t in range(len(DAM_allocation['P_clear'])):
                             da_bids_df.loc[len(da_bids_df)] = [current_time - timedelta(seconds=buffer) + timedelta(seconds=t*3600), \
                                                                time_granted - buffer + t*3600, DAM_allocation['P_clear'][t], DAM_allocation['Q_clear'][t]]
-                        
-                        ##########################################################
-                        print("*** Update Logic here to alter schedule based on cleared quantity ***")
-                        for i in range(len(DAM_allocation['P_clear'])):
+                        for i in range(len(DAM_allocation['Q_clear'])):
+                            altered_schedule_fleet[i] = -1 * (DAM_allocation['Q_clear'][i]*(10**6)) / (cosim_bus_mul)
+                            # altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
+                    else:
+                        for i in range(24):
                             altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
+                    
+                    if flag_controlled_charging:
                         M.charge_schedule_fleet = altered_schedule_fleet
                         M.final_optimization()    
 
-                        EV_fleet_schedule_df_temp['adjusted'] = (altered_schedule_fleet.copy())
-                        EV_fleet_DAM_schedule_df = pd.concat([EV_fleet_DAM_schedule_df, EV_fleet_schedule_df_temp], ignore_index=True)
+                    EV_fleet_schedule_df_temp['adjusted'] = (altered_schedule_fleet.copy())
+                    EV_fleet_DAM_schedule_df = pd.concat([EV_fleet_DAM_schedule_df, EV_fleet_schedule_df_temp], ignore_index=True)
                         
                 tnext_day_ahead_market_adjust  = tnext_day_ahead_market_adjust + t_day_ahead_market_interval
         
@@ -623,6 +624,7 @@ if __name__ == "__main__":
         
         #######################################################################    
         ################## EV Simulation Adjustment Interval ##################
+        ############################################################################################ ev_sim_interval = tnext_EV_sim - last_EV_sim_time
         if time_granted >= tnext_EV_sim and time_granted < duration:
              print('DSO: Current EV simulation Interval - {}'.format(time_granted))  
              ev_sim_interval = tnext_EV_sim - last_EV_sim_time
@@ -630,14 +632,16 @@ if __name__ == "__main__":
              # Check for Time Of Use Disincentive
              if flag_TOU and (TOU_start <= (round(time_granted)%86400) <= TOU_end):
                  TOU_count = 0
-                 for C in EV_Chargers:
+                 for C in M.chargers:
                      TOU_count += 1
-                     if TOU_count > round(TOU_participation*len(EV_Chargers)):
+                     if TOU_count > round(TOU_participation*len(M.chargers)):
                          break
                      if C.occupied:
                          C.remove_vehicle()
              else:
-                 M.simulate_scheduled_DAM(t_EV_sim_interval)
+                 # M.simulate_scheduled_DAM(t_EV_sim_interval)
+                 if (time_granted - last_EV_sim_time) > 0:
+                     M.simulate_scheduled_DAM(time_granted - last_EV_sim_time)
                          
              # EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
              # EV_queue_time.append(time_granted)
@@ -745,31 +749,29 @@ if __name__ == "__main__":
         h.helicsCloseLibrary()
         
     
-    #%%############################ Plotting ########################################
+    ############################# Plotting ########################################
     
-    manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
-    fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    ax1.plot(np.array(manager_df.time)/3600,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
-    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
-    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
-    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
-    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
+    # manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
+    # fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    # ax1.plot(np.array(manager_df.time)/3600,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
 
-    ax1.legend(loc = 'best')
-    ax1.set_xlabel("Time (hour)")
-    ax1.set_ylabel("Net EV Load (Kw)")
-    ax1.grid()
-    fig1.show()
+    # ax1.legend(loc = 'best')
+    # ax1.set_xlabel("Time (hour)")
+    # ax1.set_ylabel("Net EV Load (Kw)")
+    # ax1.grid()
+    # fig1.show()
 
 
-    fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
-    ax2.legend(loc = 'best')
-    ax2.set_xlabel("Time (hour)")
-    ax2.set_ylabel("Feeder Demand")
-    ax2.grid()
-    fig2.show()
+    # fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    # ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
+    # ax2.legend(loc = 'best')
+    # ax2.set_xlabel("Time (hour)")
+    # ax2.set_ylabel("Feeder Demand")
+    # ax2.grid()
+    # fig2.show()
     
 
-    
-    
