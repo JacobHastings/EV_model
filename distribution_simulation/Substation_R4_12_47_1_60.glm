@@ -16,9 +16,9 @@ module connection;
 module residential {
   implicit_enduses NONE;
 };
-#include "../../support/schedules/appliance_schedules.glm";
-#include "../../support/schedules/water_and_setpoint_schedule_v5.glm";
-#include "../../support/schedules/commercial_schedules.glm";
+#include "../support/schedules/appliance_schedules.glm";
+#include "../support/schedules/water_and_setpoint_schedule_v5.glm";
+#include "../support/schedules/commercial_schedules.glm";
 #set minimum_timestep=30;
 #set relax_naming_rules=1;
 #set warn=0;
@@ -30,9 +30,15 @@ object metrics_collector_writer {
   alternate yes;
   extension h5;
 };
+object csv_reader {
+    name csv_reader_obj;
+    filename "../support/weather/Bronte2021_LST_CSV.csv";
+};
+ 
 object climate {
   name weather_Substation_2;
-  // tmyfile "../../support/weather/Bronte2021_LST.DAT";
+  tmyfile "../support/weather/Bronte2021_LST_CSV.csv";
+  reader csv_reader_obj;
   interpolate QUADRATIC;
   latitude 29.65;
   longitude -95.42;

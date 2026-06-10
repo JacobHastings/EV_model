@@ -140,7 +140,7 @@ if __name__ == "__main__":
     start_date = '2021-08-05 00:00:00' 
     end_date = '2021-08-07 00:00:00'
     
-    feeder_name = 'R4_12_47_1'
+    feeder_name = 'R4_12_47_1_60'
     broker_port = 50000
     cosim_bus = 5
     cosim_bus_mul = 4021.74
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     EV_dict = model['evcharger_det']
     EV_dict_mod = {}
     
-    vehicle_count = 100
+    vehicle_count = 315
     M = Manager()
     Vehicles = []
     vehicle_c_rating = 2.5
