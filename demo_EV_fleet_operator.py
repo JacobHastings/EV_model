@@ -229,7 +229,10 @@ if __name__ == "__main__":
         V.update_capacity()
         V.charging_efficiency = float(ev_info['charging_efficiency'])
         V.mileage_efficiency = float(ev_info['mileage_efficiency'])
-        V.maximum_charge_rate = V.battery_size * 1000 * vehicle_c_rating   
+        # V.maximum_charge_rate = V.battery_size * 1000 * vehicle_c_rating   
+        V.maximum_charge_rate = float(ev_info['maximum_charge_rate'])
+        # if V.maximum_charge_rate < 11500:
+        #     V.maximum_charge_rate = 11500
         
         # V.work_start = float(ev_info['arrival_at_work'])
         # V.work_duration =  float(ev_info['duration_at_work'])
@@ -393,8 +396,9 @@ if __name__ == "__main__":
     ###### Buffer to sending out data before the Operational Cycle  ######
     buffer = 10
     last_EV_sim_time = 0
-    tnext_EV_sim = 0
+    # tnext_EV_sim = 0
     t_EV_sim_interval = 300
+    tnext_EV_sim = t_EV_sim_interval
     
     if include_gld: 
         tnext_physics_powerflow = pf_interval-buffer
@@ -625,7 +629,7 @@ if __name__ == "__main__":
         #######################################################################    
         ################## EV Simulation Adjustment Interval ##################
         ############################################################################################ ev_sim_interval = tnext_EV_sim - last_EV_sim_time
-        if time_granted >= tnext_EV_sim and time_granted < duration:
+        if time_granted >= tnext_EV_sim and time_granted < duration and time_granted > 1:
              print('DSO: Current EV simulation Interval - {}'.format(time_granted))  
              ev_sim_interval = tnext_EV_sim - last_EV_sim_time
              
@@ -751,27 +755,26 @@ if __name__ == "__main__":
     
     ############################# Plotting ########################################
     
-    # manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
-    # fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    # ax1.plot(np.array(manager_df.time)/3600,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
-    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
-    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
-    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
-    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
+    manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
+    fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    ax1.plot((np.array(manager_df.time)/3600) - 1,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
+    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
+    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
+    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
+    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
 
-    # ax1.legend(loc = 'best')
-    # ax1.set_xlabel("Time (hour)")
-    # ax1.set_ylabel("Net EV Load (Kw)")
-    # ax1.grid()
-    # fig1.show()
+    ax1.legend(loc = 'best')
+    ax1.set_xlabel("Time (hour)")
+    ax1.set_ylabel("Net EV Load (Kw)")
+    ax1.grid()
+    fig1.show()
 
 
-    # fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    # ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
-    # ax2.legend(loc = 'best')
-    # ax2.set_xlabel("Time (hour)")
-    # ax2.set_ylabel("Feeder Demand")
-    # ax2.grid()
-    # fig2.show()
+    fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
+    ax2.legend(loc = 'best')
+    ax2.set_xlabel("Time (hour)")
+    ax2.set_ylabel("Feeder Demand")
+    ax2.grid()
+    fig2.show()
     
-

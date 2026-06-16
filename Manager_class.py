@@ -85,7 +85,8 @@ class Manager:
             if hour_start == hour_end:
                 # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency)
                 if (self.current_time - setting_change >= self.last_setting_change[C.current_vehicle.index]) or (self.current_time == 0):
-                    C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency)
+                    C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
+                    # C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
                     self.last_setting_change[C.current_vehicle.index] = self.current_time
                     C.DC_charge_setting = C.current_vehicle.maximum_charge_rate
                 else:
@@ -167,6 +168,10 @@ class Manager:
 
         A = cp.Parameter((T,T),nonneg=True)
         A.value = np.ones((T,T))
+        # Construct lower triangular matrix for running SOC calculation
+        for j in range(T):
+            if j>i:
+                A.value[i,j] = 0
 
         SOC_max = cp.Parameter(nonneg=True)
         SOC_max.value = 100
@@ -261,11 +266,6 @@ class Manager:
                                     driving_loss.value[i-1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
                             # Otherwise the loss has already been applied
                 
-                # Construct lower triangular matrix for running SOC calculation
-                for j in range(T):
-                    if j>i:
-                        A.value[i,j] = 0
-                        
             # Short work time case (must create a 'clean' discharging hour)            
             if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
                 charge_available.value[discharge_hour,V.index] = 0
@@ -316,7 +316,7 @@ class Manager:
 
         prob = cp.Problem(objective,constraints)
 
-        prob.solve(solver=cp.GUROBI)
+        prob.solve(solver=cp.GUROBI, reoptimize=True)
 
         planned_schedule = Charge_schedule.value
         planned_schedule_fleet = Charge_schedule_fleet.value
@@ -343,7 +343,7 @@ class Manager:
         ##############################################################################
         #                       Begin Bidding Formulation                            #
         ##############################################################################
-        extra_energy_margin = 1.0      # >1 for allowable issues; =1 for exact margins
+        extra_energy_margin = 1.0      # >1 for allowable issues; =1 for exact margins; <1 for safety
         P_buffer = 2
         bid_slope = 0.0000035 * vehicle_count
 
@@ -515,7 +515,7 @@ class Manager:
         SOC_goal = []
         for i in range(vehicle_count):
             SOC_goal.append(self.vehicles[i].SOC_log[0][1] * 0.8)
-            SOC_goal[i] = (((self.vehicles[i].commute_distance * 2) / self.vehicles[i].mileage_efficiency) / self.vehicles[i].battery_size) * 100
+            # SOC_goal[i] = (((self.vehicles[i].commute_distance * 2) / self.vehicles[i].mileage_efficiency) / self.vehicles[i].battery_size) * 100
             
         SOC_goal_P.value = SOC_goal
         SOC_start.value = start_SOC
@@ -670,7 +670,9 @@ class Manager:
         print("optimal value", cleared_prob.value)
 
         final_schedule = Charge_schedule.value
-
+        final_scheduled_SOC = SOC.value
+        self.SOC_schedule = final_scheduled_SOC
+        
         self.charge_schedule = final_schedule
         self.charge_schedule_fleet = Charge_schedule_fleet.value
                 

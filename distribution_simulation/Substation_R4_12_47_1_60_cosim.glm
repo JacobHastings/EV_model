@@ -58,7 +58,7 @@
 clock {
 	timezone CST+6CDT;
 	starttime '2021-08-06 00:00:00';
-	stoptime '2021-08-12 00:00:00';
+	stoptime '2021-08-08 00:00:00';
 }
 
 module tape;
@@ -49367,6 +49367,1558 @@ object triplex_meter {
 	parent R4_12_47_1_tn_114_mhse_1;
 	groupid TPX_EV_METERS;
 	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_116_ev_1_mev;
+	parent R4_12_47_1_tn_116_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_119_ev_1_mev;
+	parent R4_12_47_1_tn_119_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_121_ev_1_mev;
+	parent R4_12_47_1_tn_121_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_123_ev_1_mev;
+	parent R4_12_47_1_tn_123_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_123_ev_2_mev;
+	parent R4_12_47_1_tn_123_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_123_ev_3_mev;
+	parent R4_12_47_1_tn_123_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_124_ev_1_mev;
+	parent R4_12_47_1_tn_124_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_124_ev_3_mev;
+	parent R4_12_47_1_tn_124_mhse_3;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_125_ev_1_mev;
+	parent R4_12_47_1_tn_125_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_133_ev_1_mev;
+	parent R4_12_47_1_tn_133_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_137_ev_1_mev;
+	parent R4_12_47_1_tn_137_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_145_ev_1_mev;
+	parent R4_12_47_1_tn_145_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_149_ev_1_mev;
+	parent R4_12_47_1_tn_149_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_163_ev_1_mev;
+	parent R4_12_47_1_tn_163_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_164_ev_1_mev;
+	parent R4_12_47_1_tn_164_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_165_ev_1_mev;
+	parent R4_12_47_1_tn_165_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_166_ev_1_mev;
+	parent R4_12_47_1_tn_166_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_166_ev_2_mev;
+	parent R4_12_47_1_tn_166_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_171_ev_1_mev;
+	parent R4_12_47_1_tn_171_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_172_ev_1_mev;
+	parent R4_12_47_1_tn_172_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_174_ev_1_mev;
+	parent R4_12_47_1_tn_174_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_176_ev_1_mev;
+	parent R4_12_47_1_tn_176_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_179_ev_1_mev;
+	parent R4_12_47_1_tn_179_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_180_ev_1_mev;
+	parent R4_12_47_1_tn_180_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_181_ev_1_mev;
+	parent R4_12_47_1_tn_181_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_187_ev_1_mev;
+	parent R4_12_47_1_tn_187_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_188_ev_1_mev;
+	parent R4_12_47_1_tn_188_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_188_ev_2_mev;
+	parent R4_12_47_1_tn_188_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_188_ev_3_mev;
+	parent R4_12_47_1_tn_188_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_189_ev_1_mev;
+	parent R4_12_47_1_tn_189_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_190_ev_2_mev;
+	parent R4_12_47_1_tn_190_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_190_ev_3_mev;
+	parent R4_12_47_1_tn_190_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_192_ev_1_mev;
+	parent R4_12_47_1_tn_192_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_193_ev_1_mev;
+	parent R4_12_47_1_tn_193_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_194_ev_1_mev;
+	parent R4_12_47_1_tn_194_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_194_ev_3_mev;
+	parent R4_12_47_1_tn_194_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_195_ev_1_mev;
+	parent R4_12_47_1_tn_195_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_199_ev_1_mev;
+	parent R4_12_47_1_tn_199_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_199_ev_2_mev;
+	parent R4_12_47_1_tn_199_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_204_ev_1_mev;
+	parent R4_12_47_1_tn_204_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_210_ev_3_mev;
+	parent R4_12_47_1_tn_210_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_216_ev_1_mev;
+	parent R4_12_47_1_tn_216_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_217_ev_1_mev;
+	parent R4_12_47_1_tn_217_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_218_ev_1_mev;
+	parent R4_12_47_1_tn_218_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_220_ev_1_mev;
+	parent R4_12_47_1_tn_220_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_221_ev_1_mev;
+	parent R4_12_47_1_tn_221_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_225_ev_1_mev;
+	parent R4_12_47_1_tn_225_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_227_ev_1_mev;
+	parent R4_12_47_1_tn_227_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_229_ev_1_mev;
+	parent R4_12_47_1_tn_229_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_229_ev_3_mev;
+	parent R4_12_47_1_tn_229_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_232_ev_1_mev;
+	parent R4_12_47_1_tn_232_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_235_ev_1_mev;
+	parent R4_12_47_1_tn_235_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_237_ev_1_mev;
+	parent R4_12_47_1_tn_237_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_240_ev_2_mev;
+	parent R4_12_47_1_tn_240_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_241_ev_1_mev;
+	parent R4_12_47_1_tn_241_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_243_ev_3_mev;
+	parent R4_12_47_1_tn_243_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_246_ev_2_mev;
+	parent R4_12_47_1_tn_246_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_247_ev_1_mev;
+	parent R4_12_47_1_tn_247_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_248_ev_1_mev;
+	parent R4_12_47_1_tn_248_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_253_ev_2_mev;
+	parent R4_12_47_1_tn_253_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_255_ev_1_mev;
+	parent R4_12_47_1_tn_255_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_255_ev_3_mev;
+	parent R4_12_47_1_tn_255_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_256_ev_2_mev;
+	parent R4_12_47_1_tn_256_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_262_ev_1_mev;
+	parent R4_12_47_1_tn_262_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_265_ev_1_mev;
+	parent R4_12_47_1_tn_265_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_268_ev_1_mev;
+	parent R4_12_47_1_tn_268_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_268_ev_2_mev;
+	parent R4_12_47_1_tn_268_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_268_ev_3_mev;
+	parent R4_12_47_1_tn_268_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_269_ev_1_mev;
+	parent R4_12_47_1_tn_269_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_270_ev_1_mev;
+	parent R4_12_47_1_tn_270_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_271_ev_3_mev;
+	parent R4_12_47_1_tn_271_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_273_ev_1_mev;
+	parent R4_12_47_1_tn_273_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_275_ev_1_mev;
+	parent R4_12_47_1_tn_275_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_283_ev_2_mev;
+	parent R4_12_47_1_tn_283_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_283_ev_3_mev;
+	parent R4_12_47_1_tn_283_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_284_ev_1_mev;
+	parent R4_12_47_1_tn_284_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_286_ev_1_mev;
+	parent R4_12_47_1_tn_286_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_288_ev_1_mev;
+	parent R4_12_47_1_tn_288_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_289_ev_1_mev;
+	parent R4_12_47_1_tn_289_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_291_ev_1_mev;
+	parent R4_12_47_1_tn_291_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_294_ev_1_mev;
+	parent R4_12_47_1_tn_294_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_296_ev_1_mev;
+	parent R4_12_47_1_tn_296_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_299_ev_1_mev;
+	parent R4_12_47_1_tn_299_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_304_ev_1_mev;
+	parent R4_12_47_1_tn_304_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_306_ev_1_mev;
+	parent R4_12_47_1_tn_306_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_306_ev_2_mev;
+	parent R4_12_47_1_tn_306_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_307_ev_3_mev;
+	parent R4_12_47_1_tn_307_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_310_ev_1_mev;
+	parent R4_12_47_1_tn_310_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_311_ev_1_mev;
+	parent R4_12_47_1_tn_311_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_313_ev_1_mev;
+	parent R4_12_47_1_tn_313_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_313_ev_2_mev;
+	parent R4_12_47_1_tn_313_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_319_ev_1_mev;
+	parent R4_12_47_1_tn_319_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_324_ev_1_mev;
+	parent R4_12_47_1_tn_324_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_331_ev_1_mev;
+	parent R4_12_47_1_tn_331_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_332_ev_1_mev;
+	parent R4_12_47_1_tn_332_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_333_ev_1_mev;
+	parent R4_12_47_1_tn_333_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_342_ev_1_mev;
+	parent R4_12_47_1_tn_342_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_343_ev_1_mev;
+	parent R4_12_47_1_tn_343_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_346_ev_1_mev;
+	parent R4_12_47_1_tn_346_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_348_ev_1_mev;
+	parent R4_12_47_1_tn_348_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_350_ev_1_mev;
+	parent R4_12_47_1_tn_350_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_352_ev_1_mev;
+	parent R4_12_47_1_tn_352_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_354_ev_1_mev;
+	parent R4_12_47_1_tn_354_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_357_ev_1_mev;
+	parent R4_12_47_1_tn_357_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_363_ev_1_mev;
+	parent R4_12_47_1_tn_363_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_363_ev_2_mev;
+	parent R4_12_47_1_tn_363_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_366_ev_1_mev;
+	parent R4_12_47_1_tn_366_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_371_ev_1_mev;
+	parent R4_12_47_1_tn_371_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_372_ev_1_mev;
+	parent R4_12_47_1_tn_372_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_373_ev_1_mev;
+	parent R4_12_47_1_tn_373_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_377_ev_1_mev;
+	parent R4_12_47_1_tn_377_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_380_ev_1_mev;
+	parent R4_12_47_1_tn_380_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_384_ev_1_mev;
+	parent R4_12_47_1_tn_384_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_387_ev_2_mev;
+	parent R4_12_47_1_tn_387_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_389_ev_1_mev;
+	parent R4_12_47_1_tn_389_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_390_ev_3_mev;
+	parent R4_12_47_1_tn_390_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_391_ev_1_mev;
+	parent R4_12_47_1_tn_391_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_392_ev_1_mev;
+	parent R4_12_47_1_tn_392_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_393_ev_1_mev;
+	parent R4_12_47_1_tn_393_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_394_ev_1_mev;
+	parent R4_12_47_1_tn_394_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_396_ev_1_mev;
+	parent R4_12_47_1_tn_396_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_398_ev_1_mev;
+	parent R4_12_47_1_tn_398_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_400_ev_1_mev;
+	parent R4_12_47_1_tn_400_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_400_ev_2_mev;
+	parent R4_12_47_1_tn_400_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_402_ev_1_mev;
+	parent R4_12_47_1_tn_402_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_403_ev_1_mev;
+	parent R4_12_47_1_tn_403_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_404_ev_1_mev;
+	parent R4_12_47_1_tn_404_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_405_ev_1_mev;
+	parent R4_12_47_1_tn_405_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_406_ev_1_mev;
+	parent R4_12_47_1_tn_406_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_407_ev_1_mev;
+	parent R4_12_47_1_tn_407_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_407_ev_2_mev;
+	parent R4_12_47_1_tn_407_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_408_ev_1_mev;
+	parent R4_12_47_1_tn_408_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_409_ev_1_mev;
+	parent R4_12_47_1_tn_409_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_409_ev_2_mev;
+	parent R4_12_47_1_tn_409_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_409_ev_3_mev;
+	parent R4_12_47_1_tn_409_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_413_ev_3_mev;
+	parent R4_12_47_1_tn_413_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_414_ev_2_mev;
+	parent R4_12_47_1_tn_414_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_415_ev_1_mev;
+	parent R4_12_47_1_tn_415_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_415_ev_3_mev;
+	parent R4_12_47_1_tn_415_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_417_ev_1_mev;
+	parent R4_12_47_1_tn_417_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_418_ev_2_mev;
+	parent R4_12_47_1_tn_418_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_419_ev_3_mev;
+	parent R4_12_47_1_tn_419_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_420_ev_1_mev;
+	parent R4_12_47_1_tn_420_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_420_ev_2_mev;
+	parent R4_12_47_1_tn_420_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_420_ev_3_mev;
+	parent R4_12_47_1_tn_420_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_421_ev_1_mev;
+	parent R4_12_47_1_tn_421_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_421_ev_2_mev;
+	parent R4_12_47_1_tn_421_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_421_ev_3_mev;
+	parent R4_12_47_1_tn_421_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_424_ev_1_mev;
+	parent R4_12_47_1_tn_424_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_427_ev_2_mev;
+	parent R4_12_47_1_tn_427_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_428_ev_1_mev;
+	parent R4_12_47_1_tn_428_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_429_ev_2_mev;
+	parent R4_12_47_1_tn_429_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_429_ev_3_mev;
+	parent R4_12_47_1_tn_429_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_431_ev_1_mev;
+	parent R4_12_47_1_tn_431_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_437_ev_1_mev;
+	parent R4_12_47_1_tn_437_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_437_ev_2_mev;
+	parent R4_12_47_1_tn_437_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_437_ev_3_mev;
+	parent R4_12_47_1_tn_437_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_438_ev_3_mev;
+	parent R4_12_47_1_tn_438_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_439_ev_4_mev;
+	parent R4_12_47_1_tn_439_mhse_4;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_440_ev_3_mev;
+	parent R4_12_47_1_tn_440_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_441_ev_1_mev;
+	parent R4_12_47_1_tn_441_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_441_ev_2_mev;
+	parent R4_12_47_1_tn_441_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_441_ev_3_mev;
+	parent R4_12_47_1_tn_441_mhse_3;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_442_ev_1_mev;
+	parent R4_12_47_1_tn_442_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_442_ev_2_mev;
+	parent R4_12_47_1_tn_442_mhse_2;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_444_ev_1_mev;
+	parent R4_12_47_1_tn_444_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_444_ev_2_mev;
+	parent R4_12_47_1_tn_444_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_446_ev_1_mev;
+	parent R4_12_47_1_tn_446_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_447_ev_2_mev;
+	parent R4_12_47_1_tn_447_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_448_ev_1_mev;
+	parent R4_12_47_1_tn_448_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_449_ev_2_mev;
+	parent R4_12_47_1_tn_449_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_449_ev_3_mev;
+	parent R4_12_47_1_tn_449_mhse_3;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_449_ev_4_mev;
+	parent R4_12_47_1_tn_449_mhse_4;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_449_ev_5_mev;
+	parent R4_12_47_1_tn_449_mhse_5;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_452_ev_1_mev;
+	parent R4_12_47_1_tn_452_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_453_ev_1_mev;
+	parent R4_12_47_1_tn_453_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_461_ev_1_mev;
+	parent R4_12_47_1_tn_461_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_462_ev_1_mev;
+	parent R4_12_47_1_tn_462_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_463_ev_1_mev;
+	parent R4_12_47_1_tn_463_mhse_1;
+	groupid TPX_EV_METERS;
+	phases AS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_465_ev_1_mev;
+	parent R4_12_47_1_tn_465_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_465_ev_2_mev;
+	parent R4_12_47_1_tn_465_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_466_ev_2_mev;
+	parent R4_12_47_1_tn_466_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_467_ev_1_mev;
+	parent R4_12_47_1_tn_467_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_468_ev_2_mev;
+	parent R4_12_47_1_tn_468_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_468_ev_3_mev;
+	parent R4_12_47_1_tn_468_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_469_ev_1_mev;
+	parent R4_12_47_1_tn_469_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_471_ev_1_mev;
+	parent R4_12_47_1_tn_471_mhse_1;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_472_ev_1_mev;
+	parent R4_12_47_1_tn_472_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_473_ev_1_mev;
+	parent R4_12_47_1_tn_473_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_473_ev_2_mev;
+	parent R4_12_47_1_tn_473_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_474_ev_1_mev;
+	parent R4_12_47_1_tn_474_mhse_1;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_474_ev_2_mev;
+	parent R4_12_47_1_tn_474_mhse_2;
+	groupid TPX_EV_METERS;
+	phases BS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_476_ev_2_mev;
+	parent R4_12_47_1_tn_476_mhse_2;
+	groupid TPX_EV_METERS;
+	phases CS;
+	nominal_voltage 120.0;
+}
+
+object triplex_meter {
+	name R4_12_47_1_tn_476_ev_3_mev;
+	parent R4_12_47_1_tn_476_mhse_3;
+	groupid TPX_EV_METERS;
+	phases CS;
 	nominal_voltage 120.0;
 }
 
@@ -103315,6 +104867,1752 @@ object triplex_load {
 	power_fraction_12 1;
 	power_pf_12 1;
 	parent R4_12_47_1_tn_114_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_116_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_116_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_119_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_119_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_121_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_121_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_123_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_123_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_123_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_123_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_123_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_123_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_124_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_124_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_124_ev_3;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_124_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_125_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_125_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_133_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_133_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_137_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_137_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_145_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_145_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_149_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_149_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_163_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_163_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_164_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_164_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_165_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_165_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_166_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_166_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_166_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_166_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_171_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_171_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_172_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_172_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_174_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_174_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_176_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_176_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_179_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_179_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_180_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_180_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_181_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_181_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_187_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_187_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_188_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_188_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_188_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_188_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_188_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_188_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_189_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_189_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_190_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_190_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_190_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_190_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_192_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_192_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_193_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_193_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_194_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_194_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_194_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_194_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_195_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_195_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_199_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_199_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_199_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_199_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_204_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_204_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_210_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_210_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_216_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_216_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_217_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_217_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_218_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_218_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_220_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_220_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_221_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_221_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_225_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_225_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_227_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_227_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_229_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_229_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_229_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_229_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_232_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_232_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_235_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_235_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_237_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_237_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_240_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_240_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_241_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_241_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_243_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_243_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_246_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_246_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_247_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_247_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_248_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_248_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_253_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_253_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_255_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_255_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_255_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_255_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_256_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_256_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_262_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_262_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_265_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_265_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_268_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_268_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_268_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_268_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_268_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_268_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_269_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_269_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_270_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_270_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_271_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_271_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_273_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_273_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_275_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_275_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_283_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_283_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_283_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_283_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_284_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_284_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_286_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_286_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_288_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_288_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_289_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_289_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_291_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_291_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_294_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_294_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_296_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_296_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_299_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_299_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_304_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_304_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_306_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_306_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_306_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_306_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_307_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_307_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_310_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_310_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_311_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_311_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_313_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_313_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_313_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_313_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_319_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_319_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_324_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_324_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_331_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_331_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_332_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_332_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_333_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_333_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_342_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_342_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_343_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_343_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_346_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_346_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_348_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_348_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_350_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_350_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_352_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_352_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_354_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_354_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_357_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_357_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_363_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_363_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_363_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_363_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_366_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_366_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_371_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_371_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_372_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_372_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_373_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_373_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_377_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_377_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_380_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_380_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_384_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_384_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_387_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_387_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_389_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_389_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_390_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_390_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_391_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_391_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_392_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_392_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_393_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_393_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_394_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_394_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_396_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_396_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_398_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_398_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_400_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_400_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_400_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_400_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_402_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_402_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_403_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_403_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_404_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_404_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_405_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_405_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_406_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_406_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_407_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_407_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_407_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_407_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_408_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_408_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_409_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_409_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_409_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_409_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_409_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_409_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_413_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_413_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_414_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_414_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_415_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_415_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_415_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_415_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_417_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_417_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_418_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_418_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_419_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_419_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_420_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_420_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_420_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_420_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_420_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_420_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_421_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_421_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_421_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_421_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_421_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_421_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_424_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_424_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_427_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_427_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_428_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_428_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_429_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_429_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_429_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_429_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_431_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_431_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_437_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_437_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_437_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_437_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_437_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_437_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_438_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_438_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_439_ev_4;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_439_ev_4_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_440_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_440_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_441_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_441_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_441_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_441_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_441_ev_3;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_441_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_442_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_442_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_442_ev_2;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_442_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_444_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_444_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_444_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_444_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_446_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_446_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_447_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_447_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_448_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_448_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_449_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_449_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_449_ev_3;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_449_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_449_ev_4;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_449_ev_4_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_449_ev_5;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_449_ev_5_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_452_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_452_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_453_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_453_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_461_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_461_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_462_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_462_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_463_ev_1;
+	phases AS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_463_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_465_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_465_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_465_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_465_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_466_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_466_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_467_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_467_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_468_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_468_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_468_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_468_ev_3_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_469_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_469_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_471_ev_1;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_471_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_472_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_472_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_473_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_473_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_473_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_473_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_474_ev_1;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_474_ev_1_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_474_ev_2;
+	phases BS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_474_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_476_ev_2;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_476_ev_2_mev;
+}
+
+object triplex_load {
+	name R4_12_47_1_tn_476_ev_3;
+	phases CS;
+	base_power_12 10;
+	power_fraction_12 1;
+	power_pf_12 1;
+	parent R4_12_47_1_tn_476_ev_3_mev;
 }
 
 object load {
