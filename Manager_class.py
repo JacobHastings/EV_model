@@ -2,6 +2,7 @@ from Vehicle_class import Vehicle
 from Charger_class import Charger
 import numpy as np
 import cvxpy as cp
+import math
 
 class Manager:
     
@@ -63,7 +64,7 @@ class Manager:
             for i in range(len(self.vehicles)):
                 C = Charger()
                 C.name = self.vehicles[i].name
-                C.maximum_load = self.vehicles[i].maximum_charge_rate
+                C.maximum_load = self.vehicles[i].maximum_charge_rate / self.vehicles[i].charging_efficiency
                 C.DC = True
                 C.add_vehicle(self.vehicles[i])
                 self.chargers.append(C)
@@ -81,12 +82,26 @@ class Manager:
             self.last_setting_change = np.zeros(len(self.chargers))
         # Use vehicle maximum charge rate to set c-rate
         for C in self.chargers:  
+            if C.current_vehicle.index == 51:
+                test=1
             max_charge_save = C.current_vehicle.maximum_charge_rate
             if hour_start == hour_end:
                 # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency)
+                # if (self.current_time - setting_change >= self.last_setting_change[C.current_vehicle.index]) or (self.current_time == 0):
+                #     if C.DC == True:
+                #         C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
+                #         C.DC_charge_setting = C.current_vehicle.maximum_charge_rate
+                #     else:
+                #         C.current_chargeing_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
+                #     self.last_setting_change[C.current_vehicle.index] = self.current_time
+                # else:
+                #     if C.DC == True:
+                #         C.current_vehicle.maximum_charge_rate = C.DC_charge_setting
+                #     else:
+                #         C.current_chargeing_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
                 if (self.current_time - setting_change >= self.last_setting_change[C.current_vehicle.index]) or (self.current_time == 0):
-                    C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
-                    # C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
+                    # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
+                    C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency
                     self.last_setting_change[C.current_vehicle.index] = self.current_time
                     C.DC_charge_setting = C.current_vehicle.maximum_charge_rate
                 else:
@@ -180,10 +195,14 @@ class Manager:
         SOC_start = cp.Parameter(vehicle_count,nonneg=True)
         SOC_goal_P = cp.Parameter(vehicle_count,nonneg=True)
         
+        EOD_goal = 0
         SOC_goal = []
         for i in range(vehicle_count):
-            # start_SOC[i] = self.vehicles[i].SOC_log[0][1]
-            SOC_goal.append(self.vehicles[i].SOC_log[0][1])
+            EOD_goal = self.vehicles[i].calculate_EOD_SOC_minimum()
+            # Only increase goal above starting
+            EOD_goal = max(EOD_goal,self.vehicles[i].SOC_log[0][1])
+            
+            SOC_goal.append(EOD_goal)
             
         SOC_goal_P.value = SOC_goal
         SOC_start.value = start_SOC
@@ -320,6 +339,7 @@ class Manager:
 
         planned_schedule = Charge_schedule.value
         planned_schedule_fleet = Charge_schedule_fleet.value
+        initial_scheduled_SOC = SOC.value
 
         print("status:", prob.status)
         print("optimal value", prob.value)
@@ -344,7 +364,7 @@ class Manager:
         #                       Begin Bidding Formulation                            #
         ##############################################################################
         extra_energy_margin = 1.0      # >1 for allowable issues; =1 for exact margins; <1 for safety
-        P_buffer = 2
+        P_buffer = 5
         bid_slope = 0.0000035 * vehicle_count
 
         bids = []
@@ -357,9 +377,14 @@ class Manager:
         for V in self.vehicles:
             # Determine total kWh margins for 24-hour period
             highest_scheduled_SOC = max(SOC.value[:,V.index])
-            high_energy_margin[V.index] = extra_energy_margin * (((100 - highest_scheduled_SOC)/100) * V.battery_size) / V.charging_efficiency # kWh that can be increased
+            high_energy_margin[V.index] = extra_energy_margin * (((SOC_max.value - highest_scheduled_SOC)/100) * V.battery_size) / V.charging_efficiency # kWh that can be increased
             lowest_scheduled_SOC = min(SOC.value[:,V.index])
-            low_energy_margin[V.index] = extra_energy_margin * ((lowest_scheduled_SOC/100) * V.battery_size) / V.charging_efficiency           # kWh that can be reduced
+            EOD_SOC = SOC.value[23,V.index]
+            # low_energy_margin[V.index] = extra_energy_margin * ((lowest_scheduled_SOC/100) * V.battery_size) / V.charging_efficiency           # kWh that can be reduced, overestimate
+            low_energy_margin[V.index] = extra_energy_margin * V.calculate_low_energy_margin(lowest_scheduled_SOC, EOD_SOC)                      # kWh that can be reduced, underestimate
+            if low_energy_margin[V.index] < 0:
+                print("Vehicle",V.index,"energy margin below 0 at", low_energy_margin[V.index])
+                low_energy_margin[V.index] = 0
             
             for i in range(T):
                 power_available[i,V.index] = (charge_available[i,V.index].value * V.maximum_charge_rate) - Charge_schedule[i,V.index].value
@@ -436,18 +461,22 @@ class Manager:
         fleet_high_power_used = 1000 * hours_per_interval.value * np.sum(high_energy_used.value,axis=1)
 
 
+        bid_slope_high = 30/max(fleet_high_power_used)  
+        bid_slope_low = 30/max(fleet_low_power_used)  
         for i in range(T):
             bid = []
             Q_plan = fleet_power_used[i]
             P_plan = LMP[i].value
             if fleet_low_power_used[i] > 0:
-                bid.append([np.round(Q_plan - fleet_low_power_used[i]), np.round(P_plan+P_buffer+(fleet_low_power_used[i]*bid_slope))])
+                # bid.append([np.round(Q_plan - fleet_low_power_used[i]), np.round(P_plan+P_buffer+(fleet_low_power_used[i]*bid_slope))])
+                bid.append([np.round(Q_plan - fleet_low_power_used[i]), np.round(P_plan+P_buffer+(fleet_low_power_used[i]*bid_slope_low))])
             bid.append([np.round(Q_plan), P_plan+P_buffer])
             bid.append([np.round(Q_plan), P_plan-P_buffer])
             if fleet_high_power_used[i] > 0:
-                bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope))])
+                # bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope))])
+                bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope_high))])
             bids.append(bid)
-
+ 
         max_bid_len = 0
         for bid in bids:
             max_bid_len = max(max_bid_len,len(bid))
@@ -475,6 +504,8 @@ class Manager:
         self.charge_schedule_fleet = Charge_schedule_fleet.value
         self.low_energy_used = low_energy_used.value
         self.high_energy_used = high_energy_used.value
+        # self.SOC_schedule = initial_scheduled_SOC
+        
         
     def final_optimization(self):
         interval = 3600
@@ -514,8 +545,9 @@ class Manager:
         
         SOC_goal = []
         for i in range(vehicle_count):
-            SOC_goal.append(self.vehicles[i].SOC_log[0][1] * 0.8)
-            # SOC_goal[i] = (((self.vehicles[i].commute_distance * 2) / self.vehicles[i].mileage_efficiency) / self.vehicles[i].battery_size) * 100
+            # SOC_goal.append(self.vehicles[i].SOC_log[0][1] * 0.85)
+            SOC_goal.append(self.vehicles[i].calculate_EOD_SOC_minimum())
+
             
         SOC_goal_P.value = SOC_goal
         SOC_start.value = start_SOC

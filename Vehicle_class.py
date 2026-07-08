@@ -1,4 +1,4 @@
-# import math #used in old scheduler only
+import math
 
 class Vehicle:
     
@@ -107,8 +107,38 @@ class Vehicle:
             
         self.next_state_change = self.schedule[1][0]                                # Assume leaving home is first action
         
-
+    def calculate_low_energy_margin(self, SOC_low, SOC_EOD):
+        low_margin = (SOC_low/100) * self.battery_size
+        low_margin = low_margin - ((self.commute_distance*2) / self.mileage_efficiency )
+        EOD_margin = (SOC_EOD - self.calculate_EOD_SOC_minimum()) * self.battery_size
         
+        low_margin = min(low_margin,EOD_margin)
+        # Returning kWh
+        return low_margin / self.charging_efficiency
+    
+    def calculate_EOD_SOC_minimum(self):
+        EOD_goal = 0
+        if self.work_start + self.work_duration + (self.commute_duration / 3600) <= 24:
+            # Hours at beginning of next day before departure, rounded
+            EOD_goal = math.floor(self.work_start - (self.commute_duration / 3600))
+        else:
+            # Return time rounded to first full hour
+            EOD_goal = math.ceil(24 - (self.work_start + self.work_duration + (self.commute_duration / 3600)))
+            # Hours before departure
+            EOD_goal = math.floor(self.work_start - (self.commute_duration / 3600)) - EOD_goal
+        # kWh available for charging
+        EOD_goal = EOD_goal * (self.maximum_charge_rate / 1000)
+        # Minimum viable End of Day kWh
+        EOD_goal = (self.commute_distance * 2 / self.mileage_efficiency) - EOD_goal
+        # Minimum viable End Of Day SOC
+        EOD_goal = (EOD_goal / self.battery_size) * 100
+        # Ensure viability
+        if EOD_goal < 0:
+            EOD_goal = 0
+        if EOD_goal > 100:
+            EOD_goal = 100
+        
+        return EOD_goal
         
     def info(self):
         help_string = "------ Vehicle class variables -----\n"

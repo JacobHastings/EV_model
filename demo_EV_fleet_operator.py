@@ -258,10 +258,14 @@ if __name__ == "__main__":
     
     M.vehicles = Vehicles
     M.initialize_chargers_from_vehicles()
+    for C in M.chargers:
+        C.DC = False
     M.last_setting_change = np.zeros(len(M.chargers))
         
-    M.LMP_est = np.array([10., 10., 10., 10., 10., 10., 20., 20., 20., 20., 20., 20., 20.,
-           20., 20., 20., 40., 40., 40., 40., 20., 20., 20., 20.])
+    # M.LMP_est = np.array([10., 10., 10., 10., 10., 10., 20., 20., 20., 20., 20., 20., 20.,
+    #        20., 20., 20., 40., 40., 40., 40., 20., 20., 20., 20.])
+    M.LMP_est = np.array([133.,  32.,  26.,  25.,  25.,  25.,  26.,  28.,  32.,  30.,  32.,
+            35.,  42.,  44.,  46.,  57.,  51.,  42.,  42.,  41.,  33.,  36., 33.,  30.])
     
     M.obj_SOC = 1
     M.obj_price = 1
@@ -499,6 +503,13 @@ if __name__ == "__main__":
                     DAM_profile_KW = gld_KW_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
                     DAM_profile_KVAR = gld_KVAR_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
                 
+                # Security for quick SOC fix
+                # for V in M.vehicles:
+                #     if V.battery_SOC >= 93:
+                #         print("Battery over 93; adjusting from",V.battery_SOC)
+                #         V.battery_SOC = 92
+                #         V.update_capacity()
+                #         V.update_log()
                 
                 M.initial_optimization(cosim_bus_mul)
                 bid =  M.bids_DAM
@@ -755,26 +766,31 @@ if __name__ == "__main__":
     
     ############################# Plotting ########################################
     
-    manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
-    fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    ax1.plot((np.array(manager_df.time)/3600) - 1,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
-    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
-    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
-    ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
-    ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
+    # manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
+    # fig1, ax1 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    # ax1.plot((np.array(manager_df.time)/3600) - 1,np.array(manager_df.demand), '-', label = 'All EVs - Actual')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.planned, '-', label = 'All EVs - Planned')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]+(1000*np.sum(M.high_energy_used,axis=1)), '-', label = 'High')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time[24:]/3600, EV_fleet_DAM_schedule_df.planned[24:]-(1000*np.sum(M.low_energy_used,axis=1)),'-', label = 'Low')
+    # ax1.plot(EV_fleet_DAM_schedule_df.time/3600, EV_fleet_DAM_schedule_df.adjusted, '-', label = 'All EVs - Adjusted')
 
-    ax1.legend(loc = 'best')
-    ax1.set_xlabel("Time (hour)")
-    ax1.set_ylabel("Net EV Load (Kw)")
-    ax1.grid()
-    fig1.show()
+    # ax1.legend(loc = 'best')
+    # ax1.set_xlabel("Time (hour)")
+    # ax1.set_ylabel("Net EV Load (Kw)")
+    # ax1.grid()
+    # fig1.show()
 
 
-    fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
-    ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
-    ax2.legend(loc = 'best')
-    ax2.set_xlabel("Time (hour)")
-    ax2.set_ylabel("Feeder Demand")
-    ax2.grid()
-    fig2.show()
-    
+    # fig2, ax2 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
+    # ax2.plot(substation_load_df['timestamp'], substation_load_df['substation_load_real'], '-', label = 'Real Demand (MW)')
+    # ax2.legend(loc = 'best')
+    # ax2.set_xlabel("Time (hour)")
+    # ax2.set_ylabel("Feeder Demand")
+    # ax2.grid()
+    # fig2.show()
+
+
+    # SOCs = []
+    # for V in M.vehicles:
+    #     SOCs.append(V.battery_SOC)
+    # SOC_schedule = M.SOC_schedule

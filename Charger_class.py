@@ -82,6 +82,8 @@ class Charger:
             if (self.current_charging_rate <= 0) or (self.current_charging_rate > self.current_vehicle.maximum_charge_rate) or (self.current_charging_rate > (self.maximum_load * self.current_vehicle.charging_efficiency)):
                 # Default to maximum if not set
                 self.current_charging_rate = min(self.current_vehicle.maximum_charge_rate, (self.maximum_load * self.current_vehicle.charging_efficiency))
+            
+            self.current_charging_rate = self.current_vehicle.maximum_charge_rate
         
         # Charge battery
         # Check for overcharge
