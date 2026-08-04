@@ -515,7 +515,7 @@ if __name__ == "__main__":
                             ev_manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
                             ev_manager_df['timestamp'] = start_date + pd.to_timedelta(ev_manager_df['time'], unit='s')
                             last_day_ev = ev_manager_df.set_index('timestamp').loc[DAM_start:DAM_end].resample('3600s').mean()
-                            last_day_ev_profile = last_day_df['demand'].values*cosim_bus_mul
+                            last_day_ev_profile = last_day_df['demand'].values*cosim_bus_mul/1e6
                             DAM_profile_KW = (DAM_profile_KW - last_day_ev_profile) 
                         
                 # Security for quick SOC fix
