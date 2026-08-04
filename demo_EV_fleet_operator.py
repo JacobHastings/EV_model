@@ -569,6 +569,7 @@ if __name__ == "__main__":
                         allocation_raw = h.helicsInputGetString(sub_object)
                         DAM_allocation =  json.loads(allocation_raw)
                         print('DSO: Received cleared DAM values {} for Bus {}'.format(DAM_allocation, cosim_bus))
+                        M.LMP_est = np.array(DAM_allocation['P_clear'])
                         for t in range(len(DAM_allocation['P_clear'])):
                             da_bids_df.loc[len(da_bids_df)] = [current_time - timedelta(seconds=buffer) + timedelta(seconds=t*3600), \
                                                                time_granted - buffer + t*3600, DAM_allocation['P_clear'][t], DAM_allocation['Q_clear'][t]]
@@ -587,7 +588,7 @@ if __name__ == "__main__":
                     EV_fleet_DAM_schedule_df = pd.concat([EV_fleet_DAM_schedule_df, EV_fleet_schedule_df_temp], ignore_index=True)
                         
                 tnext_day_ahead_market_adjust  = tnext_day_ahead_market_adjust + t_day_ahead_market_interval
-        
+
         
         
         #######################################################################
