@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # json_path = '../src/wrapper_config_test.json'
     
 
-    include_gld = False
+    include_gld = True
     include_wrapper = True
     include_helics = True
     include_dso_ev_coordination =  True
@@ -500,9 +500,24 @@ if __name__ == "__main__":
                 DAM_profile_KVAR = DAM_profile_KW//MW_MVAR_factor
 
                 if include_gld:
-                    DAM_profile_KW = gld_KW_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
-                    DAM_profile_KVAR = gld_KVAR_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
-                
+                    if time_granted < 3600:
+                        DAM_profile_KW = gld_KW_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean() 
+                        DAM_profile_KVAR = gld_KVAR_cosim_bus_scaled.loc[DAM_start:DAM_end].resample('3600s').mean()
+                    else:
+                        DAM_start = DAM_start - timedelta(days=1)
+                        DAM_end  = DAM_end  - timedelta(days=1)
+                        last_day_df = substation_load_df.set_index('timestamp').loc[DAM_start:DAM_end].resample('3600s').mean()
+                        DAM_profile_KW = last_day_df['substation_load_real'].values*cosim_bus_mul
+                        DAM_profile_KVAR = last_day_df['substation_load_imag'].values*cosim_bus_mul
+                        
+                    
+                        if include_dso_ev_coordination:
+                            ev_manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
+                            ev_manager_df['timestamp'] = start_date + pd.to_timedelta(ev_manager_df['time'], unit='s')
+                            last_day_ev = ev_manager_df.set_index('timestamp').loc[DAM_start:DAM_end].resample('3600s').mean()
+                            last_day_ev_profile = last_day_df['demand'].values*cosim_bus_mul
+                            DAM_profile_KW = (DAM_profile_KW - last_day_ev_profile) 
+                        
                 # Security for quick SOC fix
                 # for V in M.vehicles:
                 #     if V.battery_SOC >= 93:
@@ -523,12 +538,8 @@ if __name__ == "__main__":
                 print("Currently just using the observed Load Forecast")
                 print("*** Update Logic here to demonestrate the impact of DSO-EV handshake Currently ***")
                 
-                if include_dso_ev_coordination: 
-                     bid['constant_MW'] = list(DAM_profile_KW - np.array(bid['Q_bid'])[:, 0]) 
-                     bid['constant_MVAR'] = list(DAM_profile_KVAR)
-                else:
-                    bid['constant_MW'] = list(DAM_profile_KW)
-                    bid['constant_MVAR'] = list(DAM_profile_KVAR)
+                bid['constant_MW'] = list(DAM_profile_KW)
+                bid['constant_MVAR'] = list(DAM_profile_KVAR)
                 
                 # print(bid)
                 bid_raw = json.dumps(bid)
