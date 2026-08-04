@@ -126,9 +126,10 @@ if __name__ == "__main__":
     # json_path = '../src/wrapper_config_test.json'
     
 
-    include_gld = True
+    include_gld = False
     include_wrapper = True
     include_helics = True
+    include_dso_ev_coordination =  True
     
     flag_TOU = False
     TOU_participation = 0.75
@@ -149,7 +150,7 @@ if __name__ == "__main__":
     ################## Reading Wrapper Configuration Json File ################
     if include_wrapper: 
         wrapper_config_path = '../MATPOWER-wrapper/src/'
-        wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
+        # wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
         wrapper_config_filename = wrapper_config_path + 'wrapper_config_v2.json'
         with open(wrapper_config_filename, 'r') as f:
             wrapper_config = json.loads(f.read())
@@ -331,7 +332,7 @@ if __name__ == "__main__":
         gld_KW_cosim_bus_scaled = gld_KW_cosim_bus*cosim_bus_mul
         gld_KVAR_cosim_bus_scaled = gld_KVAR_cosim_bus*cosim_bus_mul
     
-    
+    print(cosim_bus_mul)
     # fig0, ax0 = plt.subplots(1, 1, figsize =(10, 6), dpi =120)
     # ax0.plot(DSO_KW_cosim_bus.index, DSO_KW_cosim_bus.values, '-', label = 'ERCOT')
     # ax0.plot(gld_KW_cosim_bus_scaled.index, gld_KW_cosim_bus_scaled.values, '-', label = 'GLD')
@@ -342,7 +343,6 @@ if __name__ == "__main__":
     # fig0.show()
         
     # exit
-    
     ##### Setting up HELICS Configuration #####
     print('DSO: HELICS Version {}'.format(h.helicsGetVersion()))
     if include_helics :
@@ -522,8 +522,13 @@ if __name__ == "__main__":
 
                 print("Currently just using the observed Load Forecast")
                 print("*** Update Logic here to demonestrate the impact of DSO-EV handshake Currently ***")
-                bid['constant_MW'] = list(DAM_profile_KW)
-                bid['constant_MVAR'] = list(DAM_profile_KVAR)
+                
+                if include_dso_ev_coordination: 
+                     bid['constant_MW'] = list(DAM_profile_KW - np.array(bid['Q_bid'])[:, 0]) 
+                     bid['constant_MVAR'] = list(DAM_profile_KVAR)
+                else:
+                    bid['constant_MW'] = list(DAM_profile_KW)
+                    bid['constant_MVAR'] = list(DAM_profile_KVAR)
                 
                 # print(bid)
                 bid_raw = json.dumps(bid)
