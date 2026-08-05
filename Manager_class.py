@@ -4,6 +4,30 @@ import numpy as np
 import cvxpy as cp
 import math
 
+
+def interpolate_segment_strict_q(q_start, p_start, q_end, p_end, n_points, q_step=1):
+    """
+    Return n_points with strictly increasing Q between q_start and q_end.
+    If q_start == q_end, force a strictly increasing sequence using q_step.
+    P is linearly interpolated over the same n_points.
+    """
+    if q_end == q_start:
+        # force strictly increasing Q using a small step
+        Q_vals = q_start + np.arange(n_points) * q_step
+    else:
+        Q_vals = np.linspace(q_start, q_end, n_points)
+        # ensure strictly increasing even if rounding causes ties
+        Q_vals = np.round(Q_vals)
+        for j in range(1, len(Q_vals)):
+            if Q_vals[j] <= Q_vals[j-1]:
+                Q_vals[j] = Q_vals[j-1] + q_step
+
+    P_vals = np.linspace(p_start, p_end, n_points)
+
+    return [[int(q), np.round(p)] for q, p in zip(Q_vals, P_vals)]
+
+
+
 class Manager:
     
     def __init__(self):
@@ -463,6 +487,7 @@ class Manager:
 
         bid_slope_high = 30/max(fleet_high_power_used)  
         bid_slope_low = 30/max(fleet_low_power_used)  
+        n_extra = 4; q_step = 0
         for i in range(T):
             bid = []
             Q_plan = fleet_power_used[i]
@@ -470,11 +495,20 @@ class Manager:
             if fleet_low_power_used[i] > 0:
                 # bid.append([np.round(Q_plan - fleet_low_power_used[i]), np.round(P_plan+P_buffer+(fleet_low_power_used[i]*bid_slope))])
                 bid.append([np.round(Q_plan - fleet_low_power_used[i]), np.round(P_plan+P_buffer+(fleet_low_power_used[i]*bid_slope_low))])
-            bid.append([np.round(Q_plan), P_plan+P_buffer])
-            bid.append([np.round(Q_plan), P_plan-P_buffer])
+            # bid.append([np.round(Q_plan), P_plan+P_buffer])
+            # bid.append([np.round(Q_plan), P_plan-P_buffer])
+            q1, p1 = np.round(Q_plan), P_plan + P_buffer
+            q2, p2 = np.round(Q_plan), P_plan - P_buffer
+            seg_12 = interpolate_segment_strict_q(q1, p1, q2, p2, n_extra, q_step)
+            bid.extend(seg_12)
             if fleet_high_power_used[i] > 0:
                 # bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope))])
-                bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope_high))])
+                # bid.append([np.round(Q_plan+fleet_high_power_used[i]), np.round(P_plan-P_buffer-(fleet_high_power_used[i]*bid_slope_high))])
+                q3, p3 = seg_12[-1][0], p2 
+                q4 = np.round(Q_plan + fleet_high_power_used[i])
+                p4 = np.round(P_plan - P_buffer - (fleet_high_power_used[i] * bid_slope_high))
+                seg_34 = interpolate_segment_strict_q(q3 + q_step, p3, q4, p4, n_extra, q_step)
+                bid.extend(seg_34)
             bids.append(bid)
  
         max_bid_len = 0

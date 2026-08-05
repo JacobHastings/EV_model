@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # json_path = '../src/wrapper_config_test.json'
     
 
-    include_gld = True
+    include_gld = False
     include_wrapper = True
     include_helics = True
     include_dso_ev_coordination =  True
