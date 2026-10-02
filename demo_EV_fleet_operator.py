@@ -126,7 +126,7 @@ if __name__ == "__main__":
     # json_path = '../src/wrapper_config_test.json'
     
 
-    include_gld = False
+    include_gld = True
     include_wrapper = True
     include_helics = True
     include_dso_ev_coordination =  True
@@ -146,11 +146,15 @@ if __name__ == "__main__":
     cosim_bus = 5
     cosim_bus_mul = 4021.74
     pf_interval = 60
+    
+    #   'BASE' 'TOU' 'P2D' 'P2D1' 'DAM' 'DAM_DSO' "NONE'
+    mode = 'DAM_DSO'
+    
     ###########################################################################        
     ################## Reading Wrapper Configuration Json File ################
     if include_wrapper: 
-        wrapper_config_path = '../MATPOWER-wrapper/src/'
-        # wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
+        # wrapper_config_path = '../MATPOWER-wrapper/src/'
+        wrapper_config_path = 'C:/Users/jacob/Documents/MATPOWER-wrapper/src/'
         wrapper_config_filename = wrapper_config_path + 'wrapper_config_v2.json'
         with open(wrapper_config_filename, 'r') as f:
             wrapper_config = json.loads(f.read())
@@ -222,9 +226,10 @@ if __name__ == "__main__":
         V.name =  ev_name
         V.index = EV_index
         EV_index += 1
-        
-        V.set_day_schedule(duration)
-        V.battery_SOC = 70 
+        # V.set_day_schedule(duration)
+        V.battery_SOC = 70
+        if mode == 'BASE':
+            V.battery_SOC = 100
         ev_info['battery_SOC'] = V.battery_SOC
         V.battery_size = float(ev_info['mileage_classification']) / float(ev_info['mileage_efficiency'])
         V.update_capacity()
@@ -250,7 +255,8 @@ if __name__ == "__main__":
             home_arrival += 24
         V.commute_duration = round(((home_arrival - V.work_start - V.work_duration) * 3600), -1)    # Duration is in seconds
         V.commute_distance = float(ev_info['travel_distance']) / 2
-
+        
+        V.set_day_schedule(duration)
         V.update_log()
         Vehicles.append(V)
         
@@ -265,6 +271,7 @@ if __name__ == "__main__":
         
     # M.LMP_est = np.array([10., 10., 10., 10., 10., 10., 20., 20., 20., 20., 20., 20., 20.,
     #        20., 20., 20., 40., 40., 40., 40., 20., 20., 20., 20.])
+    LMP_TOU = np.array([20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 20., 40., 40., 40., 40., 40., 20., 20.])
     M.LMP_est = np.array([133.,  32.,  26.,  25.,  25.,  25.,  26.,  28.,  32.,  30.,  32.,
             35.,  42.,  44.,  46.,  57.,  51.,  42.,  42.,  41.,  33.,  36., 33.,  30.])
     
@@ -273,7 +280,41 @@ if __name__ == "__main__":
     M.obj_avg = 1
     M.obj_diff = 1
     flag_controlled_charging = True
-
+    
+    if mode == 'BASE':
+        M.obj_price = 0
+        M.obj_avg = 0
+        M.obj_diff = 0
+        flag_controlled_charging = False
+        include_dso_ev_coordination = False
+        
+    if mode == 'TOU':
+        M.obj_price = 1
+        M.obj_avg = 0
+        M.obj_diff = 0
+        flag_controlled_charging = False
+        include_dso_ev_coordination = False
+        M.LMP_est = LMP_TOU
+    if mode == 'P2D':
+        M.obj_price = 1
+        M.obj_avg = 1
+        M.obj_diff = 1
+        flag_controlled_charging = False
+        include_dso_ev_coordination = False
+    if mode == 'P2D1':
+        M.obj_price = 0.1    #0.1
+        M.obj_avg = 0.01    #0.01
+        M.obj_diff = 0.01   #0.01        
+        flag_controlled_charging = False
+        include_dso_ev_coordination = False
+    if mode == 'DAM':
+        flag_controlled_charging = True
+        include_dso_ev_coordination = False
+    if mode == 'DAM_DSO':
+        flag_controlled_charging = True
+        include_dso_ev_coordination = True
+    
+        
     ###########################################################################
     ########## Adding HELICS configurations for the DSO-EV simulator ##########
     fed_name = 'DSO_EV_sim'
@@ -303,9 +344,14 @@ if __name__ == "__main__":
                 json.dump(helics_config_gld, fp1, indent=4)            
             ########## Write out glm file with EVs replaced by loads ##########
             ofn = dir_for_glm.replace('.glm', '_cosim.glm')
+            if mode != 'NONE':
+                outputfn = 'outputs/' + mode + '_EV_charger_output.csv'
+                model['group_recorder']['EV_meter_recorder']['file'] = outputfn
+                outputfn =  'outputs/' + mode + '_Substation_output.csv'
+                model['recorder']['Substation_recorder']['file'] = outputfn
             glmanip.write(ofn, model, clock, directives, modules, classes)
             no_of_federates += 1
-        
+       
     
         helics_config_DSO_EV_filename = f"{fed_name}_helics_config.json"
         with open(helics_config_DSO_EV_filename, 'w') as fp2:
@@ -507,7 +553,7 @@ if __name__ == "__main__":
                         DAM_start = DAM_start - timedelta(days=1)
                         DAM_end  = DAM_end  - timedelta(days=1)
                         last_day_df = substation_load_df.set_index('timestamp').loc[DAM_start:DAM_end].resample('3600s').mean()
-                        DAM_profile_KW = last_day_df['substation_load_real'].values*cosim_bus_mul
+                        DAM_profile_KW = pd.Series(last_day_df['substation_load_real'].values*cosim_bus_mul)    # variable type becomes an array here, typecast to fix
                         DAM_profile_KVAR = last_day_df['substation_load_imag'].values*cosim_bus_mul
                         
                     
@@ -515,8 +561,9 @@ if __name__ == "__main__":
                             ev_manager_df = pd.DataFrame(M.load_log, columns=['time', 'demand'])
                             ev_manager_df['timestamp'] = start_date + pd.to_timedelta(ev_manager_df['time'], unit='s')
                             last_day_ev = ev_manager_df.set_index('timestamp').loc[DAM_start:DAM_end].resample('3600s').mean()
-                            last_day_ev_profile = last_day_df['demand'].values*cosim_bus_mul/1e6
-                            DAM_profile_KW = (DAM_profile_KW - last_day_ev_profile) 
+                            # last_day_ev_profile = last_day_df['demand'].values*cosim_bus_mul/1e6
+                            last_day_ev_profile = last_day_ev['demand'].values*cosim_bus_mul/1e6
+                            DAM_profile_KW = pd.Series(DAM_profile_KW - last_day_ev_profile)  # variable type becomes an array here, typecast to fix
                         
                 # Security for quick SOC fix
                 # for V in M.vehicles:
@@ -528,11 +575,20 @@ if __name__ == "__main__":
                 
                 M.initial_optimization(cosim_bus_mul)
                 bid =  M.bids_DAM
+                if flag_controlled_charging == False:
+                    for i in range(len(bid['Q_bid'])):
+                        for j in range(len(bid['Q_bid'][i])):
+                            bid['Q_bid'][i][j] = 0.0
 
                 ### Write code to  add planned_schedule_fleet data into the planned column of EV_fleet_DAM_schedule_df
                 EV_fleet_schedule_df_temp = pd.DataFrame(columns=['time', 'planned', 'adjusted'])
-                EV_fleet_schedule_df_temp['time'] = list((DAM_profile_KW.index -  start_date).total_seconds())
-                EV_fleet_schedule_df_temp['planned'] = list(M.charge_schedule_fleet.copy())
+                # Hacky fix: data type of DAM_profile_KW.index changes after day 1
+                if time_granted < 86400:
+                    EV_fleet_schedule_df_temp['time'] = list((DAM_profile_KW.index -  start_date).total_seconds())
+                else:
+                    EV_fleet_schedule_df_temp['time'] = ((np.array(DAM_profile_KW.index)*3600) + time_granted).tolist()
+                if (mode != 'P2D') and (mode != 'P2D1'):
+                    EV_fleet_schedule_df_temp['planned'] = list(M.charge_schedule_fleet.copy())
 
 
                 print("Currently just using the observed Load Forecast")
@@ -570,11 +626,18 @@ if __name__ == "__main__":
                         DAM_allocation =  json.loads(allocation_raw)
                         print('DSO: Received cleared DAM values {} for Bus {}'.format(DAM_allocation, cosim_bus))
                         M.LMP_est = np.array(DAM_allocation['P_clear'])
+                        if (mode == 'P2D') or (mode == 'P2D1'):
+                            M.initial_optimization(cosim_bus_mul)
+                            EV_fleet_schedule_df_temp['planned'] = list(M.charge_schedule_fleet.copy())
+                        if mode == 'TOU':
+                            M.LMP_est = LMP_TOU
                         for t in range(len(DAM_allocation['P_clear'])):
                             da_bids_df.loc[len(da_bids_df)] = [current_time - timedelta(seconds=buffer) + timedelta(seconds=t*3600), \
                                                                time_granted - buffer + t*3600, DAM_allocation['P_clear'][t], DAM_allocation['Q_clear'][t]]
                         for i in range(len(DAM_allocation['Q_clear'])):
                             altered_schedule_fleet[i] = -1 * (DAM_allocation['Q_clear'][i]*(10**6)) / (cosim_bus_mul)
+                            if altered_schedule_fleet[i] < 10:
+                                altered_schedule_fleet[i] = 0
                             # altered_schedule_fleet[i] = M.charge_schedule_fleet[i] + (1000*random.uniform(-1*sum(M.low_energy_used[i,:]),sum(M.high_energy_used[i,:])))
                     else:
                         for i in range(24):
@@ -671,9 +734,11 @@ if __name__ == "__main__":
                      if C.occupied:
                          C.remove_vehicle()
              else:
-                 # M.simulate_scheduled_DAM(t_EV_sim_interval)
                  if (time_granted - last_EV_sim_time) > 0:
-                     M.simulate_scheduled_DAM(time_granted - last_EV_sim_time)
+                     if mode == 'BAS':
+                         M.simulate_uncoordinated(time_granted - last_EV_sim_time)
+                     else:
+                         M.simulate_scheduled_DAM(time_granted - last_EV_sim_time)
                          
              # EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
              # EV_queue_time.append(time_granted)
@@ -811,3 +876,31 @@ if __name__ == "__main__":
     # for V in M.vehicles:
     #     SOCs.append(V.battery_SOC)
     # SOC_schedule = M.SOC_schedule
+    
+    hourly_load_log = []
+
+    current_hour = 0
+    total = 0.0
+    count = 0
+
+    for seconds, value in M.load_log:
+        hour = int(seconds // 3600)
+
+        if hour != current_hour:
+            hourly_load_log.append(total / count)
+            current_hour = hour
+            total = 0.0
+            count = 0
+
+        total += value
+        count += 1
+
+    if count:
+        hourly_load_log.append(total / count)
+    
+    EV_fleet_DAM_schedule_df['actual'] = hourly_load_log
+    
+    # M_df = pd.DataFrame(M.load_log, columns=["time", "planned", "adjusted", "actual"])
+    outfile_name = "output_" + mode + ".csv"
+    EV_fleet_DAM_schedule_df.to_csv(outfile_name, index=False)
+    

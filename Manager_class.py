@@ -94,6 +94,67 @@ class Manager:
                 self.chargers.append(C)
         else:
             print("Charger list not empty. No initialization performed.")
+    
+    def simulate_uncoordinated(self, interval):
+        self.load = 0
+        # Initialize if not already
+        if len(self.last_setting_change) < len(self.chargers):
+            self.last_setting_change = np.zeros(len(self.chargers))
+        for C in self.chargers:
+            max_charge_save = C.current_vehicle.maximum_charge_rate
+            # Set rate to max if at home
+            for entry in C.current_vehicle.schedule:
+                if entry[0] <= self.current_time:
+                    if entry[1] == 'HOME':
+                        C.current_vehicle.maximum_charge_rate = max_charge_save
+                    else:
+                        C.current_vehicle.maximum_charge_rate = 0
+                else:
+                    break
+                
+            # Charge in 10 second intervals
+            interval_time = 0
+            load_avg = 0
+            small_interval = 10
+            while interval_time < interval:
+                if interval - interval_time < small_interval:
+                    small_interval = interval - interval_time
+                if C.current_vehicle.battery_SOC >= 100:
+                    # Update vehicle information
+                    C.current_vehicle.update_SOC()
+                    C.current_vehicle.current_time += small_interval
+                    C.current_vehicle.update_log()
+                    
+                    # Update charger information
+                    C.current_time = C.current_vehicle.current_time
+                    C.update_load()
+                else:
+                    if C.occupied == False:
+                        C.add_vehicle(C.current_vehicle)
+                    C.charge(small_interval)
+                    load_avg += C.load
+                
+                interval_time += small_interval
+            load_avg = load_avg / (interval/small_interval)
+            self.load += load_avg
+            
+            # Discharge fully upon leaving
+            for entry in C.current_vehicle.schedule:
+                if entry[1]=='DRIVING_WORK':
+                    if (entry[0] >= self.current_time) and (entry[0] < (self.current_time + interval)):
+                        C.current_vehicle.battery_capacity = C.current_vehicle.battery_capacity - ((C.current_vehicle.commute_distance*2)/C.current_vehicle.mileage_efficiency)
+                        C.current_vehicle.update_SOC()
+                        C.current_vehicle.update_log()
+            
+            # Restore charge rate value
+            C.current_vehicle.maximum_charge_rate = max_charge_save
+                        
+        # Update Manager
+        self.current_time += interval
+        if self.current_time == self.load_log[len(self.load_log)-1][0]:
+            self.load_log[len(self.load_log)-1] = (self.current_time,self.load)
+        else:
+            self.load_log.append((self.current_time,self.load))
                
     def simulate_scheduled_DAM(self, interval):
         # Note: do not use intervals > 3600
@@ -116,13 +177,13 @@ class Manager:
                 #         C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
                 #         C.DC_charge_setting = C.current_vehicle.maximum_charge_rate
                 #     else:
-                #         C.current_chargeing_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
+                #         C.current_charging_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
                 #     self.last_setting_change[C.current_vehicle.index] = self.current_time
                 # else:
                 #     if C.DC == True:
                 #         C.current_vehicle.maximum_charge_rate = C.DC_charge_setting
                 #     else:
-                #         C.current_chargeing_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
+                #         C.current_charging_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
                 if (self.current_time - setting_change >= self.last_setting_change[C.current_vehicle.index]) or (self.current_time == 0):
                     # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
                     C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency
@@ -223,8 +284,8 @@ class Manager:
         SOC_goal = []
         for i in range(vehicle_count):
             EOD_goal = self.vehicles[i].calculate_EOD_SOC_minimum()
-            # Only increase goal above starting
-            EOD_goal = max(EOD_goal,self.vehicles[i].SOC_log[0][1])
+            # Only increase goal above starting - removed to make sure 100% SOC starts are viable
+            # EOD_goal = max(EOD_goal,self.vehicles[i].SOC_log[0][1])
             
             SOC_goal.append(EOD_goal)
             
@@ -234,7 +295,7 @@ class Manager:
         Charge_schedule = cp.Variable((T,vehicle_count))
         # Change to be more vehicle specific
         constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
-
+        # constraints += [Charge_schedule >= 0]
         charge_available = cp.Parameter((T,vehicle_count),nonneg=True)
         charge_available.value = np.zeros((T,vehicle_count))
 
@@ -244,6 +305,7 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
+            # constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
             # discharge_hour = -1
             for i in range(T):
                 time = i * interval
@@ -314,8 +376,8 @@ class Manager:
                 charge_available.value[discharge_hour,V.index] = 0
                 driving_loss.value[discharge_hour,V.index] = -200*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
 
-            # Convert charge_available to watts
-            constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate]
+            # Convert charge_available to watts on charger
+            constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate/V.charging_efficiency]
             
             SOC_per_watt_hr = 100 / (V.battery_size*1000)
             
@@ -329,13 +391,13 @@ class Manager:
                 
 
         A1 = cp.Parameter(nonneg=True)      # Price
-        A1.value = self.obj_price * 1       #1
+        A1.value = self.obj_price * 0.00000001       #1
         A2 = cp.Parameter(nonneg=True)      # SOC
         A2.value = self.obj_SOC * 50        #50
         A3 = cp.Parameter(nonneg=True)      # Smoothing avg
-        A3.value = self.obj_avg * 100       #100
+        A3.value = self.obj_avg * 0.00000001       #100
         A4 = cp.Parameter(nonneg=True)      # Smoothing diff
-        A4.value = self.obj_diff * 200      #200
+        A4.value = self.obj_diff * 0.00000001      #200
         A5 = cp.Parameter(nonneg=True)      # 20-80 rule
         A5.value = 0
 
@@ -411,7 +473,7 @@ class Manager:
                 low_energy_margin[V.index] = 0
             
             for i in range(T):
-                power_available[i,V.index] = (charge_available[i,V.index].value * V.maximum_charge_rate) - Charge_schedule[i,V.index].value
+                power_available[i,V.index] = (charge_available[i,V.index].value * V.maximum_charge_rate / V.charging_efficiency) - Charge_schedule[i,V.index].value
                 power_used[i,V.index] = Charge_schedule[i,V.index].value
             
         # fleet_power_available = sum(power_available.transpose())
@@ -473,7 +535,7 @@ class Manager:
 
         bid_prob = cp.Problem(bid_objective,bid_constraints)
 
-        bid_prob.solve(solver=cp.GUROBI)
+        bid_prob.solve(solver=cp.GUROBI,reoptimize=True)
         # bid_prob.solve()
 
 
@@ -538,7 +600,7 @@ class Manager:
         self.charge_schedule_fleet = Charge_schedule_fleet.value
         self.low_energy_used = low_energy_used.value
         self.high_energy_used = high_energy_used.value
-        # self.SOC_schedule = initial_scheduled_SOC
+        self.SOC_schedule = initial_scheduled_SOC
         
         
     def final_optimization(self):
@@ -559,6 +621,7 @@ class Manager:
         
         # Change to be more vehicle specific
         constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
+        # constraints += [Charge_schedule >= 0]
 
         #############################################################################################
         start_SOC = []
@@ -595,6 +658,7 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
+            # constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
             # discharge_hour = -1
             for i in range(T):
                 time = i * interval + V.current_time
@@ -672,8 +736,8 @@ class Manager:
                 charge_available.value[discharge_hour,V.index] = 0
                 driving_loss.value[discharge_hour,V.index] = -200*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
                         
-            # Convert charge_available to watts
-            constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate]
+            # Convert charge_available to watts on charger
+            constraints += [Charge_schedule[:,V.index] <= charge_available[:,V.index]*V.maximum_charge_rate/V.charging_efficiency]
             
             SOC_per_watt_hr = 100 / (V.battery_size*1000)
             
@@ -681,7 +745,7 @@ class Manager:
             constraints += [SOC[:,V.index] == ((A @ ((Charge_schedule[:,V.index]*hours_per_interval*V.charging_efficiency*SOC_per_watt_hr)+driving_loss[:,V.index]))+SOC_start[V.index])]
             constraints += [SOC[:,V.index] <= SOC_max, SOC[:,V.index] >= SOC_min]
             
-            # Don't drop below 80% of starting SOC for simulation
+            # Don't drop below EOD min
             if flag_maintain_SOC:
                 constraints += [SOC[T-1,V.index] >= SOC_goal_P[V.index]]
                 # constraints += [SOC[T-1,V.index] >= (SOC_start[V.index] * 0.8)]
@@ -730,7 +794,7 @@ class Manager:
         cleared_prob = cp.Problem(cleared_objective,constraints)
 
         print("Beginning Final Optimization")
-        cleared_prob.solve(solver=cp.GUROBI)
+        cleared_prob.solve(solver=cp.GUROBI, reoptimize=True)
 
         print("status:", cleared_prob.status)
         print("optimal value", cleared_prob.value)
