@@ -40,7 +40,8 @@ class Charger:
             
     def update_load(self):
         if self.occupied:
-            self.load = self.current_charging_rate / self.current_vehicle.charging_efficiency
+            # self.load = self.current_charging_rate / self.current_vehicle.charging_efficiency
+            self.load = self.current_charging_rate
         else:
             self.load = 0
         

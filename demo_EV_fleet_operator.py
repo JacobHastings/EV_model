@@ -148,7 +148,7 @@ if __name__ == "__main__":
     pf_interval = 60
     
     #   'BASE' 'TOU' 'P2D' 'P2D1' 'DAM' 'DAM_DSO' "NONE'
-    mode = 'DAM_DSO'
+    mode = 'BASE'
     
     ###########################################################################        
     ################## Reading Wrapper Configuration Json File ################
@@ -227,7 +227,7 @@ if __name__ == "__main__":
         V.index = EV_index
         EV_index += 1
         # V.set_day_schedule(duration)
-        V.battery_SOC = 70
+        V.battery_SOC = 100
         if mode == 'BASE':
             V.battery_SOC = 100
         ev_info['battery_SOC'] = V.battery_SOC
@@ -236,14 +236,10 @@ if __name__ == "__main__":
         V.charging_efficiency = float(ev_info['charging_efficiency'])
         V.mileage_efficiency = float(ev_info['mileage_efficiency'])
         # V.maximum_charge_rate = V.battery_size * 1000 * vehicle_c_rating   
-        V.maximum_charge_rate = float(ev_info['maximum_charge_rate'])
+        V.maximum_charge_rate = float(ev_info['maximum_charge_rate']) * V.charging_efficiency
         # if V.maximum_charge_rate < 11500:
         #     V.maximum_charge_rate = 11500
-        
-        # V.work_start = float(ev_info['arrival_at_work'])
-        # V.work_duration =  float(ev_info['duration_at_work'])
-        # V.commute_distance = float(ev_info['travel_distance'])
-        
+
         V.work_start = int(ev_info['arrival_at_work']) // 100
         V.work_start += (( int(ev_info['arrival_at_work']) % 100 ) / 60)
         V.work_duration = float(ev_info['duration_at_work']) / 3600

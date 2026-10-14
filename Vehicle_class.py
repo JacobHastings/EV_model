@@ -109,8 +109,8 @@ class Vehicle:
         
     def calculate_low_energy_margin(self, SOC_low, SOC_EOD):
         low_margin = (SOC_low/100) * self.battery_size
-        low_margin = low_margin - ((self.commute_distance*2) / self.mileage_efficiency )
-        EOD_margin = (SOC_EOD - self.calculate_EOD_SOC_minimum()) * self.battery_size
+        # low_margin = low_margin - ((self.commute_distance*2) / self.mileage_efficiency )
+        EOD_margin = ((SOC_EOD - self.calculate_EOD_SOC_minimum()) / 100) * self.battery_size
         
         low_margin = min(low_margin,EOD_margin)
         # Returning kWh
@@ -137,6 +137,7 @@ class Vehicle:
             EOD_goal = 0
         if EOD_goal > 100:
             EOD_goal = 100
+            print("Infeasible schedule detected for vehicle number {}".format(self.index))
         
         return EOD_goal
         
@@ -147,7 +148,7 @@ class Vehicle:
         help_string = help_string + "battery_size: \t\t\tmaximum energy stored in the battery in kWh \n"
         help_string = help_string + "battery_type: \t\t\tan integer indicating battery chemistry (0 = NMC, 1 = LTO, 2 = LMO)\n"
         help_string = help_string + "battery_peak_V: \t\tthe battery voltage at peak power for DC Fast Charging\n"
-        help_string = help_string + "maximum_charge_rate:\tthe highest allowed charge rate in Watts \n"
+        help_string = help_string + "maximum_charge_rate:\tthe highest allowed charge rate delivered to the battery in Watts \n"
         help_string = help_string + "charging_efficiency: \tcharging efficiency of the vehicle expressed as a decimal \n"
         help_string = help_string + "index: \t\t\t\t\tan integer assigned to this vehicle for a label (-1 indicates it is unset)\n"
         

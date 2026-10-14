@@ -186,7 +186,10 @@ class Manager:
                 #         C.current_charging_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
                 if (self.current_time - setting_change >= self.last_setting_change[C.current_vehicle.index]) or (self.current_time == 0):
                     # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index])
-                    C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency
+                    if self.charge_available[hour_start][C.current_vehicle.index] > 0:
+                        C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency / self.charge_available[hour_start][C.current_vehicle.index]
+                    else:
+                        C.current_vehicle.maximum_charge_rate = 0
                     self.last_setting_change[C.current_vehicle.index] = self.current_time
                     C.DC_charge_setting = C.current_vehicle.maximum_charge_rate
                 else:
@@ -221,10 +224,16 @@ class Manager:
             else:
                 interval1 = 3600 - (int(self.current_time) % 3600)
                 interval2 = interval - interval1
-                C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index]
+                if self.charge_available[hour_start][C.current_vehicle.index] > 0:
+                    C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency / self.charge_available[hour_start][C.current_vehicle.index]
+                else:
+                    C.current_vehicle.maximum_charge_rate = 0
                 C.charge(interval1)
                 load1 = C.load
-                C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_end][C.current_vehicle.index]
+                if self.charge_available[hour_end][C.current_vehicle.index] > 0:
+                    C.current_vehicle.maximum_charge_rate = self.charge_schedule[hour_end][C.current_vehicle.index] * C.current_vehicle.charging_efficiency / self.charge_available[hour_end][C.current_vehicle.index]
+                else:
+                    C.current_vehicle.maximum_charge_rate = 0
                 C.charge(interval2)
                 load2 = C.load
                 load_avg = ((interval1*load1)+(interval2*load2)) / interval
@@ -269,9 +278,10 @@ class Manager:
         A = cp.Parameter((T,T),nonneg=True)
         A.value = np.ones((T,T))
         # Construct lower triangular matrix for running SOC calculation
-        for j in range(T):
-            if j>i:
-                A.value[i,j] = 0
+        for i in range(T):
+            for j in range(T):
+                if j>i:
+                    A.value[i,j] = 0
 
         SOC_max = cp.Parameter(nonneg=True)
         SOC_max.value = 100
@@ -294,8 +304,8 @@ class Manager:
 
         Charge_schedule = cp.Variable((T,vehicle_count))
         # Change to be more vehicle specific
-        constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
-        # constraints += [Charge_schedule >= 0]
+        # constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
+        constraints += [Charge_schedule >= 0]
         charge_available = cp.Parameter((T,vehicle_count),nonneg=True)
         charge_available.value = np.zeros((T,vehicle_count))
 
@@ -305,7 +315,7 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
-            # constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
+            constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
             # discharge_hour = -1
             for i in range(T):
                 time = i * interval
@@ -391,13 +401,13 @@ class Manager:
                 
 
         A1 = cp.Parameter(nonneg=True)      # Price
-        A1.value = self.obj_price * 0.00000001       #1
+        A1.value = self.obj_price * 1       #1
         A2 = cp.Parameter(nonneg=True)      # SOC
         A2.value = self.obj_SOC * 50        #50
         A3 = cp.Parameter(nonneg=True)      # Smoothing avg
-        A3.value = self.obj_avg * 0.00000001       #100
+        A3.value = self.obj_avg * 100       #100
         A4 = cp.Parameter(nonneg=True)      # Smoothing diff
-        A4.value = self.obj_diff * 0.00000001      #200
+        A4.value = self.obj_diff * 200      #200
         A5 = cp.Parameter(nonneg=True)      # 20-80 rule
         A5.value = 0
 
@@ -463,11 +473,15 @@ class Manager:
         for V in self.vehicles:
             # Determine total kWh margins for 24-hour period
             highest_scheduled_SOC = max(SOC.value[:,V.index])
-            high_energy_margin[V.index] = extra_energy_margin * (((SOC_max.value - highest_scheduled_SOC)/100) * V.battery_size) / V.charging_efficiency # kWh that can be increased
+            high_energy_margin[V.index] = extra_energy_margin * (((SOC_max.value - highest_scheduled_SOC)/100) * V.battery_size) / V.charging_efficiency # kWh that can be increased for the day
+            if high_energy_margin[V.index] < 1e-7:
+                high_energy_margin[V.index] = 0
             lowest_scheduled_SOC = min(SOC.value[:,V.index])
             EOD_SOC = SOC.value[23,V.index]
             # low_energy_margin[V.index] = extra_energy_margin * ((lowest_scheduled_SOC/100) * V.battery_size) / V.charging_efficiency           # kWh that can be reduced, overestimate
             low_energy_margin[V.index] = extra_energy_margin * V.calculate_low_energy_margin(lowest_scheduled_SOC, EOD_SOC)                      # kWh that can be reduced, underestimate
+            if low_energy_margin[V.index] < 1e-7:
+                low_energy_margin[V.index] = 0
             if low_energy_margin[V.index] < 0:
                 print("Vehicle",V.index,"energy margin below 0 at", low_energy_margin[V.index])
                 low_energy_margin[V.index] = 0
@@ -535,7 +549,7 @@ class Manager:
 
         bid_prob = cp.Problem(bid_objective,bid_constraints)
 
-        bid_prob.solve(solver=cp.GUROBI,reoptimize=True)
+        bid_prob.solve(reoptimize=True,solver=cp.GUROBI)
         # bid_prob.solve()
 
 
@@ -598,9 +612,16 @@ class Manager:
         self.bids_DAM = bids_out
         self.charge_schedule = Charge_schedule.value
         self.charge_schedule_fleet = Charge_schedule_fleet.value
+        for t in range(24):
+            if self.charge_schedule_fleet[t] < 1e-6:
+                self.charge_schedule_fleet[t] = 0
+            for idx in range(vehicle_count):
+                if self.charge_schedule[t][idx] < 1e-6:
+                    self.charge_schedule[t][idx] = 0
         self.low_energy_used = low_energy_used.value
         self.high_energy_used = high_energy_used.value
         self.SOC_schedule = initial_scheduled_SOC
+        self.charge_available = charge_available.value
         
         
     def final_optimization(self):
@@ -620,8 +641,8 @@ class Manager:
         Charge_schedule = cp.Variable((T,vehicle_count))
         
         # Change to be more vehicle specific
-        constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
-        # constraints += [Charge_schedule >= 0]
+        # constraints += [Charge_schedule >= 0, Charge_schedule <= self.vehicles[0].maximum_charge_rate]
+        constraints += [Charge_schedule >= 0]
 
         #############################################################################################
         start_SOC = []
@@ -632,6 +653,11 @@ class Manager:
 
         A = cp.Parameter((T,T),nonneg=True)
         A.value = np.ones((T,T))
+        # Construct lower triangular matrix for running SOC calculation
+        for i in range(T):
+            for j in range(T):
+                if j>i:
+                    A.value[i,j] = 0
 
         SOC_max = cp.Parameter(nonneg=True)
         SOC_max.value = 100
@@ -658,7 +684,7 @@ class Manager:
         SOC = cp.Variable((T,vehicle_count),nonneg=True)
 
         for V in self.vehicles:
-            # constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
+            constraints += [Charge_schedule[:,V.index] <= V.maximum_charge_rate / V.charging_efficiency]
             # discharge_hour = -1
             for i in range(T):
                 time = i * interval + V.current_time
@@ -725,11 +751,7 @@ class Manager:
                                 else:
                                     driving_loss.value[i-1,V.index] += -100*((V.commute_distance/V.mileage_efficiency)/V.battery_size)
                             # Otherwise the loss has already been applied
-                
-                # Construct lower triangular matrix for running SOC calculation
-                for j in range(T):
-                    if j>i:
-                        A.value[i,j] = 0
+
                         
             # Short work time case (must create a 'clean' discharging hour)            
             if (V.work_duration*3600) + (V.commute_duration*2) < 7200:
@@ -753,17 +775,9 @@ class Manager:
                 # self.maintain_constraints_idx.append(len(constraints)-1) 
         
         Charge_schedule_fleet = cp.Variable(T)
-        constraints += [Charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
-        
-        #############################################################################################
-
-        # cleared_constraints = self.constraints.copy()
-        # # Remove requirement to end at same SOC as start
-        # for index in range(len(self.maintain_constraints_idx)-1,-1,-1):
-        #     del cleared_constraints[self.maintain_constraints_idx[index]]
-        # # Add cleared quantity schedule constraints
-        # cleared_constraints += [Cleared_charge_schedule_fleet == cp.sum(self.charge_schedule,axis=1)]
-        constraints += [Cleared_charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
+        # constraints += [Charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
+        # constraints += [Cleared_charge_schedule_fleet == cp.sum(Charge_schedule,axis=1)]
+        constraints += [cp.sum(Charge_schedule,axis=1) == Cleared_charge_schedule_fleet]
         
 
         C1 = cp.Parameter(nonneg=True)
