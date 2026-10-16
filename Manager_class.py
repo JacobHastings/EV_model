@@ -167,8 +167,6 @@ class Manager:
             self.last_setting_change = np.zeros(len(self.chargers))
         # Use vehicle maximum charge rate to set c-rate
         for C in self.chargers:  
-            if C.current_vehicle.index == 51:
-                test=1
             max_charge_save = C.current_vehicle.maximum_charge_rate
             if hour_start == hour_end:
                 # C.current_vehicle.maximum_charge_rate = C.convert_DC_rate(self.charge_schedule[hour_start][C.current_vehicle.index] * C.current_vehicle.charging_efficiency)
@@ -249,6 +247,14 @@ class Manager:
                         C.current_vehicle.update_SOC()
                         C.current_vehicle.update_log()
                 
+        for V in self.vehicles:
+            # Allow for rounding errors
+            if V.battery_SOC < 0 and V.battery_SOC > -1e-6:
+                V.battery_SOC = 0
+                V.update_capacity()
+            # Notify of any remaining errors
+            if V.battery_SOC < 0:
+                print("Insufficient charge for vehicle",V.index)
         self.current_time += interval
         if self.current_time == self.load_log[len(self.load_log)-1][0]:
             self.load_log[len(self.load_log)-1] = (self.current_time,self.load)
@@ -403,7 +409,7 @@ class Manager:
         A1 = cp.Parameter(nonneg=True)      # Price
         A1.value = self.obj_price * 1       #1
         A2 = cp.Parameter(nonneg=True)      # SOC
-        A2.value = self.obj_SOC * 50        #50
+        A2.value = self.obj_SOC * 400       #50
         A3 = cp.Parameter(nonneg=True)      # Smoothing avg
         A3.value = self.obj_avg * 100       #100
         A4 = cp.Parameter(nonneg=True)      # Smoothing diff
@@ -608,6 +614,13 @@ class Manager:
         bids_out['P_bid'] = bids_out['P_bid'].tolist()
         bids_out['constant_MVAR'] = bids_out['constant_MVAR'].tolist()
         bids_out['constant_MW'] = bids_out['constant_MW'].tolist()
+        
+        # Possibly redundant test to ensure 
+        delta = 1e-5
+        for Qs in bids_out['Q_bid']:
+            for i in range(len(Qs)-1):
+                if Qs[i+1] <= Qs[i]:
+                    Qs[i+1] = Qs[i] + delta
 
         self.bids_DAM = bids_out
         self.charge_schedule = Charge_schedule.value

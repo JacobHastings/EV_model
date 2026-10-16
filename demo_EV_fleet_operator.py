@@ -148,7 +148,7 @@ if __name__ == "__main__":
     pf_interval = 60
     
     #   'BASE' 'TOU' 'P2D' 'P2D1' 'DAM' 'DAM_DSO' "NONE'
-    mode = 'BASE'
+    mode = 'DAM'
     
     ###########################################################################        
     ################## Reading Wrapper Configuration Json File ################
@@ -228,8 +228,6 @@ if __name__ == "__main__":
         EV_index += 1
         # V.set_day_schedule(duration)
         V.battery_SOC = 100
-        if mode == 'BASE':
-            V.battery_SOC = 100
         ev_info['battery_SOC'] = V.battery_SOC
         V.battery_size = float(ev_info['mileage_classification']) / float(ev_info['mileage_efficiency'])
         V.update_capacity()
@@ -285,6 +283,7 @@ if __name__ == "__main__":
         include_dso_ev_coordination = False
         
     if mode == 'TOU':
+        M.obj_SOC = 10
         M.obj_price = 1
         M.obj_avg = 0
         M.obj_diff = 0
@@ -292,15 +291,17 @@ if __name__ == "__main__":
         include_dso_ev_coordination = False
         M.LMP_est = LMP_TOU
     if mode == 'P2D':
+        M.obj_SOC = 10
         M.obj_price = 1
         M.obj_avg = 1
         M.obj_diff = 1
         flag_controlled_charging = False
         include_dso_ev_coordination = False
     if mode == 'P2D1':
+        M.obj_SOC = 10
         M.obj_price = 0.1    #0.1
-        M.obj_avg = 0.01    #0.01
-        M.obj_diff = 0.01   #0.01        
+        M.obj_avg = 0.001    #0.01
+        M.obj_diff = 0.001   #0.01        
         flag_controlled_charging = False
         include_dso_ev_coordination = False
     if mode == 'DAM':
@@ -561,13 +562,6 @@ if __name__ == "__main__":
                             last_day_ev_profile = last_day_ev['demand'].values*cosim_bus_mul/1e6
                             DAM_profile_KW = pd.Series(DAM_profile_KW - last_day_ev_profile)  # variable type becomes an array here, typecast to fix
                         
-                # Security for quick SOC fix
-                # for V in M.vehicles:
-                #     if V.battery_SOC >= 93:
-                #         print("Battery over 93; adjusting from",V.battery_SOC)
-                #         V.battery_SOC = 92
-                #         V.update_capacity()
-                #         V.update_log()
                 
                 M.initial_optimization(cosim_bus_mul)
                 bid =  M.bids_DAM
@@ -731,10 +725,11 @@ if __name__ == "__main__":
                          C.remove_vehicle()
              else:
                  if (time_granted - last_EV_sim_time) > 0:
-                     if mode == 'BAS':
+                     if mode == 'BASE':
                          M.simulate_uncoordinated(time_granted - last_EV_sim_time)
                      else:
                          M.simulate_scheduled_DAM(time_granted - last_EV_sim_time)
+                     
                          
              # EV_Chargers, EV_Manager, next_EV_update_time = ev_func.simulate_EVs(EV_Chargers, EV_Manager, time_granted, ev_sim_interval, duration)
              # EV_queue_time.append(time_granted)
@@ -900,3 +895,9 @@ if __name__ == "__main__":
     outfile_name = "output_" + mode + ".csv"
     EV_fleet_DAM_schedule_df.to_csv(outfile_name, index=False)
     
+# for V in M.vehicles:
+#     if V.battery_SOC > 100:
+#         print("Vehicle",V.index,"above max SOC")
+#     if V.battery_SOC < V.calculate_EOD_SOC_minimum():
+#         print("Vehicle",V.index,"infeasible at",V.battery_SOC)
+#         print((V.calculate_EOD_SOC_minimum()-V.battery_SOC),"below minimum")
